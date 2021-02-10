@@ -262,8 +262,6 @@ class Formcotizador extends Component {
 
 
 
-    
-
 
 
 
@@ -273,6 +271,17 @@ class Formcotizador extends Component {
 
       var origen = document.getElementById("origen").value
       var destino = document.getElementById("destino").value
+      var ip = await publicIp.v4()
+
+      var cadenas = ip.split(".");
+      var ip_sincomas = "";
+      for(var i = 0; i < cadenas.length;i++){
+        ip_sincomas = ip_sincomas+cadenas[i];
+      }
+
+   
+
+     
 
 
     
@@ -281,7 +290,7 @@ class Formcotizador extends Component {
 
         case "Ipiales Bogotá":
 
-          firebase.database().ref().child("pre_compra").child((await publicIp.v4()).toString).child("Ipi-Bog").set({id_pre_compra:"Ipi-Bog",puesto:val},
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val},
           error => {
             if (error) console.log(error)
           });
@@ -292,17 +301,22 @@ class Formcotizador extends Component {
 
           case "Ipiales Cali":
 
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val},
+            error => {
+              if (error) console.log(error)
+            });
 
            
-  
             break;
-
-
 
             
           case "Ipiales Medellin Sur":
 
-
+              
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").push({id_pre_compra:"Ipi-Med",puesto:val},
+            error => {
+              if (error) console.log(error)
+            });
            
   
             break;
@@ -310,7 +324,10 @@ class Formcotizador extends Component {
 
           case "Bogotá Ipiales":
 
-        
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").push({id_pre_compra:"Bog-Ipi",puesto:val},
+            error => {
+              if (error) console.log(error)
+            });
           
 
           break;
@@ -321,14 +338,20 @@ class Formcotizador extends Component {
 
           case "Cali Ipiales":
 
-        
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").push({id_pre_compra:"Cal-Ipi",puesto:val},
+            error => {
+              if (error) console.log(error)
+            });
             
   
             break;
 
             case "Medellin Sur Ipiales":
 
-        
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").push({id_pre_compra:"Med-Ipi",puesto:val},
+              error => {
+                if (error) console.log(error)
+              });
              
     
               break;
