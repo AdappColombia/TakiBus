@@ -12,11 +12,18 @@ import moment from "moment";
 import continental from './imagenes/conti.png';
 import bolivariano from './imagenes/bol.jpeg';
 
+import  publicIp from 'public-ip';
+
+
 import './Formcotizador.css'
 
 class Formcotizador extends Component {
 
-  
+
+
+
+
+
     state = {
       data: [],
       login: [],
@@ -25,10 +32,25 @@ class Formcotizador extends Component {
       origen:[],
       viaje:[],
       fecha:[],
+      pre_compra:[],
+      nodo_precompra:'',
+      puesto:'',
       usuarios:'',
     
+      bandera: '0',
       modalInsertar: false,
       modalEditar: false,
+
+      compra:{
+         id_compra:'',
+         fecha:'',
+         nombre:'',
+         apellido:'',
+         metodo_pago:'',
+         total:'',
+         estado:'' 
+      },
+
       form: {
         canal: '',
         idioma: '',
@@ -82,6 +104,8 @@ class Formcotizador extends Component {
 
 
     peticionViaje = (origen,destino) => {
+
+
       this.setState({ viaje: [] });
 
 
@@ -235,6 +259,250 @@ class Formcotizador extends Component {
     };
 
 
+
+
+
+    
+
+
+
+
+    puesto = async (val) => {
+
+   
+
+      var origen = document.getElementById("origen").value
+      var destino = document.getElementById("destino").value
+
+
+    
+      switch(origen+" "+destino){
+
+
+        case "Ipiales Bogotá":
+
+          firebase.database().ref().child("pre_compra").child((await publicIp.v4()).toString).child("Ipi-Bog").set({id_pre_compra:"Ipi-Bog",puesto:val},
+          error => {
+            if (error) console.log(error)
+          });
+        
+
+          break;
+
+
+          case "Ipiales Cali":
+
+
+           
+  
+            break;
+
+
+
+            
+          case "Ipiales Medellin Sur":
+
+
+           
+  
+            break;
+
+
+          case "Bogotá Ipiales":
+
+        
+          
+
+          break;
+
+
+
+
+
+          case "Cali Ipiales":
+
+        
+            
+  
+            break;
+
+            case "Medellin Sur Ipiales":
+
+        
+             
+    
+              break;
+
+
+
+      }
+
+
+
+
+
+
+
+
+     
+    
+
+
+/*
+
+      firebase.database().ref().child("pre_compra").on("value", (canal) => {
+
+
+  
+        if (canal.val() !== null) {
+
+
+          this.peticionCambipBandera();
+
+          this.setState({ ...this.state.pre_compra, pre_compra: canal.val() });
+
+        }
+
+
+
+        if(this.state.bandera=="1"){
+
+
+          {Object.keys(this.state.pre_compra).map(i => {
+       
+           nodo = this.state.pre_compra[i].id_pre_compra
+
+
+          /*
+           if(this.state.pre_compra[i].estado="no_pago"){
+
+            firebase.database().ref().child(`pre_compra/${nodo}/puestos`).remove(
+              error => {
+                if (error) console.log(error)
+              });
+
+           }*/
+
+
+
+        //  })}
+
+
+/*
+          this.peticionNodoPuesto( (parseInt(nodo)));
+    
+
+
+
+        }else{
+
+          
+
+          firebase.database().ref().child("pre_compra").child("0").set({id_pre_compra:"0",estado:"no_pago"},
+          error => {
+            if (error) console.log(error)
+          });
+
+
+          
+          firebase.database().ref().child("pre_compra").child("0").child("puestos").push({puesto:val},
+          error => {
+            if (error) console.log(error)
+          });
+
+    
+        
+        }
+
+
+      });
+
+
+
+
+
+
+  
+    //insertar puestos 
+      if(this.state.nodo_precompra){
+     
+      firebase.database().ref().child("pre_compra").child(this.state.nodo_precompra).child("puestos").push({puesto:val},
+      error => {
+        if (error) console.log(error)
+      });
+      }
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+/*
+      if(bandera==1){
+
+        //esiste nodo 
+
+
+
+        this.setState({nodo_precompra: "0" })
+
+
+        console.log("nodo 1 "+this.state.nodo_precompra)
+
+
+      }else{
+
+        //no existe nodo
+
+
+        
+
+        this.setState({ nodo_precompra: "0" })
+        console.log("nodo "+this.state.nodo_precompra)
+
+
+       
+
+
+
+    //  }
+
+
+
+
+
+
+     /* switch(bandera){
+        case 0:
+          firebase.database().ref().child("puesto").child("0").push({puesto:val},
+            error => {
+              if (error) console.log(error)
+            });
+          break;
+
+          case 1:
+        /*  firebase.database().ref().child("puesto").child("0").push({puesto:val},
+            error => {
+              if (error) console.log(error)
+            });*/
+         /* break;*/
+
+    //  }*/
+     
+
+
+
+    };
+
+
+
   
     peticionPost = () => {
   
@@ -308,10 +576,18 @@ class Formcotizador extends Component {
         if(fecha){
 
             
+
+          
+          let div = document.querySelector('#contenedor');
+          div.style.visibility = 'visible';
+
             this.setState({ ...this.state.fecha, fecha: fecha });
 
             this.peticionViaje(origen,destino);
 
+
+
+  
 
 
         }else{
@@ -371,7 +647,7 @@ class Formcotizador extends Component {
       let month = date.getMonth() + 1
       let year = date.getFullYear()
       
-      console.log(year+"/"+month+"/"+day)
+ 
       
 
 
@@ -412,60 +688,13 @@ class Formcotizador extends Component {
 
 
     destino = async () => {
+
+
       var origen =  document.getElementById("origen").value
 
 
 
       this.setState({ destinoform: origen });
-
-
-
-
-     /* firebase.database().ref().child("rutas").on("value", (canal) => {
-
-
-
-      
-
-        if(origen!="Seleccione su origen"){
-
-                if (canal.val() !== null) {
-
-
-                
-
-
-
-
-                  
-                 {Object.keys(this.state.rutas).map(i => {
-       
-
-                  if(this.state.rutas[i].origen ==origen){
-
-                      var destinof = this.state.rutas[i].destino 
-
-
-                   console.log(canal.val())
-
-                   this.setState({ ...this.state.destinoform, destinoform: canal.val()});
-    
-                      
-                      
-                  }
-                 
-                 })}
-
-
-
-                } else {
-  
-                     this.setState({ rutas: [] });
-  
-                }
-        }
-      })*/
-
 
 
     }
@@ -474,14 +703,17 @@ class Formcotizador extends Component {
     componentDidMount() {
 
 
-      
+    
 
 
-
+      let div = document.querySelector('#contenedor');
+      div.style.visibility = 'hidden';
   
       this.peticionGetRutas();
       this.peticionGetFlotas();
-     
+
+
+    
     }
   
  
@@ -602,19 +834,20 @@ class Formcotizador extends Component {
 
 
                 
-             <div className="container resultados">
-            <div className="row titulos">
-            {/* <div className="">               */}
-              <ul class="list-group list-group-horizontal p-0">
-                <li class="list-group-item col-md-2 col-sm-2 text-center"><a href="#">Terminal</a></li>
-                <li class="list-group-item col-md-2 col-sm-2 text-center">Hora Salida</li>
-                <li class="list-group-item col-md-2 col-sm-2 text-center">Cantidad</li>
-                <li class="list-group-item col-md-2 col-sm-2 text-center">Precio</li>
-                <li class="list-group-item col-md-2 col-sm-2 text-center ">Opciones</li>
-                <li class="list-group-item col-md-2 col-sm-2 text-center ">Opciones</li>
-              </ul>           
-            {/* </div> */}
-            </div>
+            <div id="contenedor"   className="container resultados">
+
+              <div className="row titulos">
+        
+                <ul class="list-group list-group-horizontal p-0">
+                  <li class="list-group-item col-md-2 col-sm-2 text-center"><a href="#">Terminal</a></li>
+                  <li class="list-group-item col-md-2 col-sm-2 text-center">Hora Salida</li>
+                  <li class="list-group-item col-md-2 col-sm-2 text-center">Cantidad</li>
+                  <li class="list-group-item col-md-2 col-sm-2 text-center">Precio</li>
+                  <li class="list-group-item col-md-2 col-sm-2 text-center ">Opciones</li>
+                  <li class="list-group-item col-md-2 col-sm-2 text-center ">Opciones</li>
+                </ul>           
+       
+              </div>
            
 
             {Object.keys(this.state.viaje).map(i => {              
@@ -646,8 +879,20 @@ class Formcotizador extends Component {
               </div>
               
               <div className="col-md-2 col-sm-2 text-center "> 
-              	{"$"+ this.state.viaje[i].valor }
+
+              	{
+                
+                
+                  "$"+ this.state.viaje[i].valor 
+
+                  
+             
+                
+                
+                }
+
                 {<br></br>}
+
                 <p>
                   <button className="btn btn-primary" type="button" data-bs-toggle="collapse" 
                   data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample
@@ -668,8 +913,14 @@ class Formcotizador extends Component {
                       Tdetalles del bus
 
 
+                       
 
+                        <button className="btn btn-danger" onClick={() => this.puesto("p1")}>Puesto</button>
 
+                        <button className="btn btn-danger" onClick={() => this.puesto("p2")}>Puesto</button>
+
+                        
+                        <button className="btn btn-danger" onClick={() => this.puesto("p3")}>Puesto</button>
 
 
                       

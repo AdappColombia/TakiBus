@@ -10,6 +10,7 @@
     "firebase": "^4.8.0",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
+    "public-ip": "^4.0.3",
     "react": "^16.8.4",
     "react-bootstrap": "^1.4.3",
     "react-datepicker": "^3.4.1",
