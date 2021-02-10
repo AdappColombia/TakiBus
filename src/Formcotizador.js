@@ -32,6 +32,7 @@ class Formcotizador extends Component {
       origen:[],
       viaje:[],
       fecha:[],
+      puestos:[],
       pre_compra:[],
       nodo_precompra:'',
       puesto:'',
@@ -268,7 +269,6 @@ class Formcotizador extends Component {
     puesto = async (val) => {
 
    
-
       var origen = document.getElementById("origen").value
       var destino = document.getElementById("destino").value
       var ip = await publicIp.v4()
@@ -281,9 +281,6 @@ class Formcotizador extends Component {
 
    
 
-     
-
-
     
       switch(origen+" "+destino){
 
@@ -293,6 +290,22 @@ class Formcotizador extends Component {
           firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val},
           error => {
             if (error) console.log(error)
+
+          });
+
+
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
+  
+            if (canal.val() !== null) {
+      
+    
+              this.setState({ ...this.state.puesto, puesto: canal.val() });
+      
+            } else {
+      
+              this.setState({ puesto: [] });
+      
+            }
           });
         
 
@@ -304,6 +317,21 @@ class Formcotizador extends Component {
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val},
             error => {
               if (error) console.log(error)
+            });
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
             });
 
            
@@ -318,6 +346,20 @@ class Formcotizador extends Component {
               if (error) console.log(error)
             });
            
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
   
             break;
 
@@ -329,6 +371,23 @@ class Formcotizador extends Component {
               if (error) console.log(error)
             });
           
+
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
 
           break;
 
@@ -343,7 +402,22 @@ class Formcotizador extends Component {
               if (error) console.log(error)
             });
             
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").on("value", (canal) => {
   
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+
             break;
 
             case "Medellin Sur Ipiales":
@@ -353,174 +427,25 @@ class Formcotizador extends Component {
                 if (error) console.log(error)
               });
              
+
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").on("value", (canal) => {
+  
+                if (canal.val() !== null) {
+          
+        
+                  this.setState({ ...this.state.puesto, puesto: canal.val() });
+          
+                } else {
+          
+                  this.setState({ puesto: [] });
+          
+                }
+              });
     
               break;
 
 
-
       }
-
-
-
-
-
-
-
-
-     
-    
-
-
-/*
-
-      firebase.database().ref().child("pre_compra").on("value", (canal) => {
-
-
-  
-        if (canal.val() !== null) {
-
-
-          this.peticionCambipBandera();
-
-          this.setState({ ...this.state.pre_compra, pre_compra: canal.val() });
-
-        }
-
-
-
-        if(this.state.bandera=="1"){
-
-
-          {Object.keys(this.state.pre_compra).map(i => {
-       
-           nodo = this.state.pre_compra[i].id_pre_compra
-
-
-          /*
-           if(this.state.pre_compra[i].estado="no_pago"){
-
-            firebase.database().ref().child(`pre_compra/${nodo}/puestos`).remove(
-              error => {
-                if (error) console.log(error)
-              });
-
-           }*/
-
-
-
-        //  })}
-
-
-/*
-          this.peticionNodoPuesto( (parseInt(nodo)));
-    
-
-
-
-        }else{
-
-          
-
-          firebase.database().ref().child("pre_compra").child("0").set({id_pre_compra:"0",estado:"no_pago"},
-          error => {
-            if (error) console.log(error)
-          });
-
-
-          
-          firebase.database().ref().child("pre_compra").child("0").child("puestos").push({puesto:val},
-          error => {
-            if (error) console.log(error)
-          });
-
-    
-        
-        }
-
-
-      });
-
-
-
-
-
-
-  
-    //insertar puestos 
-      if(this.state.nodo_precompra){
-     
-      firebase.database().ref().child("pre_compra").child(this.state.nodo_precompra).child("puestos").push({puesto:val},
-      error => {
-        if (error) console.log(error)
-      });
-      }
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-/*
-      if(bandera==1){
-
-        //esiste nodo 
-
-
-
-        this.setState({nodo_precompra: "0" })
-
-
-        console.log("nodo 1 "+this.state.nodo_precompra)
-
-
-      }else{
-
-        //no existe nodo
-
-
-        
-
-        this.setState({ nodo_precompra: "0" })
-        console.log("nodo "+this.state.nodo_precompra)
-
-
-       
-
-
-
-    //  }
-
-
-
-
-
-
-     /* switch(bandera){
-        case 0:
-          firebase.database().ref().child("puesto").child("0").push({puesto:val},
-            error => {
-              if (error) console.log(error)
-            });
-          break;
-
-          case 1:
-        /*  firebase.database().ref().child("puesto").child("0").push({puesto:val},
-            error => {
-              if (error) console.log(error)
-            });*/
-         /* break;*/
-
-    //  }*/
-     
-
-
 
     };
 
@@ -860,7 +785,6 @@ class Formcotizador extends Component {
             <div id="contenedor"   className="container resultados">
 
               <div className="row titulos">
-        
                 <ul class="list-group list-group-horizontal p-0">
                   <li class="list-group-item col-md-2 col-sm-2 text-center"><a href="#">Terminal</a></li>
                   <li class="list-group-item col-md-2 col-sm-2 text-center">Hora Salida</li>
@@ -873,35 +797,36 @@ class Formcotizador extends Component {
               </div>
            
 
-            {Object.keys(this.state.viaje).map(i => {              
-            return <div className="listahorario mx-1">
-            <div className="row my-2 p-2">
-              <div className="col-md-2 col-sm-2 text-center">             
-                {
-                  this.state.viaje[i].tipo_bus=="2G"? <img width="200px" src={bolivariano}></img>:   
-                  this.state.viaje[i].tipo_bus=="2G Gold"? <img width="200px" src={bolivariano}></img>:<img width="200px" src={continental}></img>
-                }
-              </div>
+              {Object.keys(this.state.viaje).map(i => { 
 
-              <div className="col-md-2 col-sm-2 text-center">
-                {"Salida: "+this.state.viaje[i].horario}
-                {<br></br>}
-                {"Duracion: "+this.state.viaje[i].duracion}
-              </div>
+              return <div className="listahorario mx-1">
+              <div className="row my-2 p-2">
+                <div className="col-md-2 col-sm-2 text-center">             
+                  {
+                    this.state.viaje[i].tipo_bus=="2G"? <img width="200px" src={bolivariano}></img>:   
+                    this.state.viaje[i].tipo_bus=="2G Gold"? <img width="200px" src={bolivariano}></img>:<img width="200px" src={continental}></img>
+                  }
+                </div>
 
-              <div className="col-md-2 col-sm-2 text-center border-end ">
-                {this.state.viaje[i].tipo_bus}
-              </div>
+                <div className="col-md-2 col-sm-2 text-center">
+                  {"Salida: "+this.state.viaje[i].horario}
+                  {<br></br>}
+                  {"Duracion: "+this.state.viaje[i].duracion}
+                </div>
 
-              <div className="col-md-2 col-sm-2">
-               {this.state.viaje[i].terminal_salida}
-              </div>
-              
-              <div className="col-md-2 col-sm-2">
-               {this.state.viaje[i].terminal_llegada}
-              </div>
-              
-              <div className="col-md-2 col-sm-2 text-center "> 
+                <div className="col-md-2 col-sm-2 text-center border-end ">
+                  {this.state.viaje[i].tipo_bus}
+                </div>
+
+                <div className="col-md-2 col-sm-2">
+                 {this.state.viaje[i].terminal_salida}
+                </div>
+                
+                <div className="col-md-2 col-sm-2">
+                 {this.state.viaje[i].terminal_llegada}
+                </div>
+                
+                <div className="col-md-2 col-sm-2 text-center "> 
 
               	{
                 
@@ -928,15 +853,13 @@ class Formcotizador extends Component {
                 
               </div>
               
-            </div>
+              </div>
             
-            <div className="detalles">
+              <div className="detalles">
               <div className="collapse col-md-12" id={"c"+this.state.viaje[i].nodo }>
                     <div className="card card-body">
                       Tdetalles del bus
 
-
-                       
 
                         <button className="btn btn-danger" onClick={() => this.puesto("p1")}>Puesto</button>
 
@@ -946,12 +869,52 @@ class Formcotizador extends Component {
                         <button className="btn btn-danger" onClick={() => this.puesto("p3")}>Puesto</button>
 
 
+
+
+
+                        <div id="contenedor"   className="container resultados">
+
+                          <div className="row titulos">
+                            <ul class="list-group list-group-horizontal p-0">
+                              <li class="list-group-item col-md-2 col-sm-2 text-center">Pesto</li>
+                              
+                            </ul>           
+
+                          </div>
+
+
+                              {Object.keys(this.state.puesto).map(i => { 
+                              
+                              return <div className="listahorario mx-1">
+                              <div className="row my-2 p-2">
+                               
+            
+                                
+                                <div className="col-md-2 col-sm-2 text-center border-end ">
+                                  {this.state.puesto[i].puesto}
+                                </div>
+
+                                
+                                
+                               
+                                
+
+                                </div>
+
+                                  
+                                  </div>
+                                  })}
+
+                        </div>
+                          
+
+
                       
                       <br></br>
                     </div>
                   </div>
               </div>
-            </div>
+              </div>
             })}
 
           </div>
