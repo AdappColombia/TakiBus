@@ -7,7 +7,7 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import Swal from 'sweetalert2';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { ContactSupportOutlined } from '@material-ui/icons';
+import { ContactsOutlined, ContactSupportOutlined } from '@material-ui/icons';
 import moment from "moment";
 import continental from './imagenes/conti.png';
 import bolivariano from './imagenes/bol.jpeg';
@@ -20,10 +20,6 @@ import './Formcotizador.css'
 class Formcotizador extends Component {
 
 
-
-
-
-
     state = {
       data: [],
       login: [],
@@ -34,9 +30,12 @@ class Formcotizador extends Component {
       fecha:[],
       puestos:[],
       pre_compra:[],
+      ip:'',
+      ruta:'',
       nodo_precompra:'',
       puesto:'',
       usuarios:'',
+      totalPuestos:'0',
     
       bandera: '0',
       modalInsertar: false,
@@ -52,6 +51,15 @@ class Formcotizador extends Component {
          estado:'' 
       },
 
+
+
+
+
+      prereserva: {
+        puesto: '',
+      
+      },
+
       form: {
         canal: '',
         idioma: '',
@@ -62,10 +70,6 @@ class Formcotizador extends Component {
       id: 0
     };
   
-  
-
-
-
   
   
     peticionGetFlotas = () => {
@@ -85,10 +89,6 @@ class Formcotizador extends Component {
   
     };
   
-  
-  
-
-
 
     formatCurrency=(locales, currency, fractionDigits, number)=> {
 
@@ -100,9 +100,6 @@ class Formcotizador extends Component {
       return formatted;
 
     }
-
-
-
 
     peticionViaje = (origen,destino) => {
 
@@ -239,9 +236,6 @@ class Formcotizador extends Component {
      
     };
 
-
-
-
   
     peticionGet = (origen,destino) => {
 
@@ -261,7 +255,191 @@ class Formcotizador extends Component {
 
 
 
+    setIp =async (ip_sincomas) =>{
 
+
+     await this.setState({ip: ip_sincomas });
+
+    }
+
+
+    setRuta =async (rutaResult) =>{
+
+      await this.setState({ ruta:rutaResult});
+      
+    }
+
+    cargarPuestos = async ()=>{
+
+      
+      var origen = document.getElementById("origen").value
+      var destino = document.getElementById("destino").value
+      var ip = await publicIp.v4()
+
+      var cadenas = ip.split(".");
+      var ip_sincomas = "";
+      for(var i = 0; i < cadenas.length;i++){
+        ip_sincomas = ip_sincomas+cadenas[i];
+      }
+
+
+
+         
+     this.setIp(ip_sincomas)
+        
+      switch(origen+" "+destino){
+
+
+        case "Ipiales Bogotá":
+
+
+          this.setRuta("Ipi-Bog")
+
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
+  
+            if (canal.val() !== null) {
+      
+    
+              this.setState({ ...this.state.puesto, puesto: canal.val() });
+      
+            } else {
+      
+              this.setState({ puesto: [] });
+      
+            }
+          });
+        
+
+          break;
+
+
+          case "Ipiales Cali":
+
+
+            this.setRuta("Ipi-Cal")
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+           
+            break;
+
+            
+          case "Ipiales Medellin Sur":
+
+          
+          
+          
+
+            this.setRuta("Ipi-Med")
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+  
+            break;
+
+
+          case "Bogotá Ipiales":
+
+
+          
+            this.setRuta("Bog-Ipi")
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+
+          break;
+
+
+
+
+
+          case "Cali Ipiales":
+
+      
+
+              
+            this.setRuta("Cal-Ipi")
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+
+            break;
+
+            case "Medellin Sur Ipiales":
+
+
+              this.setRuta("Med-Ipi")
+
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").on("value", (canal) => {
+  
+                if (canal.val() !== null) {
+          
+        
+                  this.setState({ ...this.state.puesto, puesto: canal.val() });
+          
+                } else {
+          
+                  this.setState({ puesto: [] });
+          
+                }
+              });
+    
+              break;
+
+
+      }
+
+
+
+    }
 
 
 
@@ -279,13 +457,16 @@ class Formcotizador extends Component {
         ip_sincomas = ip_sincomas+cadenas[i];
       }
 
-   
+
+
 
     
       switch(origen+" "+destino){
 
 
         case "Ipiales Bogotá":
+
+  
 
           firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val},
           error => {
@@ -449,8 +630,6 @@ class Formcotizador extends Component {
 
     };
 
-
-
   
     peticionPost = () => {
   
@@ -475,8 +654,11 @@ class Formcotizador extends Component {
   
     peticionDelete = () => {
   
-      if (window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.form && this.state.form.canal}?`)) {
-        firebase.database().ref().child(`canales/${this.state.id}`).remove(
+    
+
+
+      if (window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.prereserva && this.state.prereserva.puesto}?`)) {
+        firebase.database().ref().child(`pre_compra/${this.state.ip}/${this.state.ruta}/${this.state.id}`).remove(
           error => {
             if (error) console.log(error)
           });
@@ -496,12 +678,28 @@ class Formcotizador extends Component {
   
     }
   
+
     seleccionarCanal = async (canal, id, caso) => {
   
       await this.setState({ form: canal, id: id });
   
       (caso === "Editar") ? this.setState({ modalEditar: true }) :
         this.peticionDelete()
+  
+    }
+
+
+    seleccionarPuesto = async (canal, id, caso) => {
+ 
+  
+      await this.setState({ prereserva: canal, id: id });
+
+
+  
+      (caso === "Editar") ? this.setState({ modalEditar: true }) :
+        this.peticionDelete()
+
+        
   
     }
 
@@ -584,7 +782,6 @@ class Formcotizador extends Component {
     }
 
 
-
     peticionGetRutas = () => {
 
 
@@ -664,6 +861,18 @@ class Formcotizador extends Component {
     
     }
   
+
+
+    totalPuestos = (total) => {
+  
+  //  await this.setState({totalPuestos: this.state.totalPuestos+total });
+  
+    
+     // console.log("total "+this.state.totalPuestos)
+
+
+     console.log("Paola Cuastubien")
+    }
  
 
   
@@ -833,8 +1042,6 @@ class Formcotizador extends Component {
                 
                   "$"+ this.state.viaje[i].valor 
 
-                  
-             
                 
                 
                 }
@@ -843,8 +1050,7 @@ class Formcotizador extends Component {
 
                 <p>
                   <button className="btn btn-primary" type="button" data-bs-toggle="collapse" 
-                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample
-                  onClick={() => this.seleccionarCanal(this.state.viaje[i], i, 'Editar')}">
+                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos()}  >
                     Selecionar Silla
                   </button>
                   {"   "}
@@ -884,27 +1090,41 @@ class Formcotizador extends Component {
 
 
                               {Object.keys(this.state.puesto).map(i => { 
+                                
                               
-                              return <div className="listahorario mx-1">
-                              <div className="row my-2 p-2">
-                               
+                                 return <div className="listahorario mx-1">
+                                 <div className="row my-2 p-2">
+
             
-                                
-                                <div className="col-md-2 col-sm-2 text-center border-end ">
-                                  {this.state.puesto[i].puesto}
-                                </div>
 
-                                
-                                
-                               
-                                
+                                   <div className="col-md-2 col-sm-2 text-center border-end ">
+                                     {this.state.puesto[i].puesto}
+                                   </div>
 
-                                </div>
 
-                                  
-                                  </div>
+                                   <div className="col-md-2 col-sm-2">
+                                     <button className="btn btn-danger" onClick={()=>this.seleccionarPuesto(this.state.puesto[i], i, 'Eliminar')}>Eliminar</button>
+                                   </div>  
+
+
+                                   </div>
+
+                                        {
+                                            <input value={this.state.viaje[i].valor}/>
+
+                                        }
+
+                                   </div>
+
+                          
+
+
                                   })}
 
+
+                                    <div className="col-md-2 col-sm-2">
+                                     <input type="text" className="btn btn-danger" value={"$"+this.state.totalPuestos} />
+                                   </div>  
                         </div>
                           
 
