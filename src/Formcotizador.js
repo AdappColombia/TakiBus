@@ -799,7 +799,7 @@ class Formcotizador extends Component {
 
               {Object.keys(this.state.viaje).map(i => { 
 
-              return <div className="listahorario mx-1">
+              return <div className="card listahorario mx-1">
               <div className="row my-2 p-2">
                 <div className="col-md-2 col-sm-2 text-center">             
                   {
@@ -859,6 +859,17 @@ class Formcotizador extends Component {
               <div className="collapse col-md-12" id={"c"+this.state.viaje[i].nodo }>
                     <div className="card card-body">
                       Tdetalles del bus
+
+                      <div className="card bus ">
+                        <div className="card-body ">
+                          <div className="">
+                          
+                          </div>
+                            
+                        </div>
+                      </div>
+
+
 
 
                         <button className="btn btn-danger" onClick={() => this.puesto("p1")}>Puesto</button>

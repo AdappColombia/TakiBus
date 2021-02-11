@@ -23,3 +23,11 @@
 .detalles{
     width: auto;
 }
+
+
+
+/* Estilos del bus */
+.bus{
+    background-color: rgb(135, 166, 224);
+    /* background-image: url(/src/imagenes/bol.jpg); */
+}
