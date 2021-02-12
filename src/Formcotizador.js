@@ -289,9 +289,11 @@ class Formcotizador extends Component {
       
     }
 
-    cargarPuestos = async (valorPuesto)=>{
+    cargarPuestos = async (valorPuesto,puesto)=>{
 
-      
+      document.getElementById(puesto).disabled=false;
+
+
 
       var totalPuestos = 0 
       var origen = document.getElementById("origen").value
@@ -418,6 +420,13 @@ class Formcotizador extends Component {
 
 
     puesto = async (val) => {
+
+      
+  
+      document.getElementById(val).disabled=true;
+
+
+
 
       var valPuesto = this.state.valorPuesto
       var totalPuestos = 0 
@@ -703,6 +712,12 @@ class Formcotizador extends Component {
     peticionDelete  =async  () => {
   
     
+     
+
+        
+      document.getElementById(this.state.prereserva.puesto).disabled=false;
+
+
       var valPuesto = this.state.valorPuesto
       var totalPuestos = 0 
 
@@ -717,12 +732,12 @@ class Formcotizador extends Component {
       }
 
 
-      if (window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.prereserva && this.state.prereserva.puesto}?`)) {
+     // if (window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.prereserva && this.state.prereserva.puesto}?`)) {
         firebase.database().ref().child(`pre_compra/${this.state.ip}/${this.state.ruta}/${this.state.id}`).remove(
           error => {
             if (error) console.log(error)
           });
-      }
+    //  }
 
 
 
@@ -976,6 +991,9 @@ class Formcotizador extends Component {
 
     buscar = async () => {
 
+           
+
+
       var origen = document.getElementById("origen").value;
       var destino  = document.getElementById("destino").value;
       var fecha = document.getElementById("fecha").value; 
@@ -1121,8 +1139,6 @@ class Formcotizador extends Component {
 
 
     
-
-
       let div = document.querySelector('#contenedor');
       div.style.visibility = 'hidden';
   
@@ -1135,16 +1151,7 @@ class Formcotizador extends Component {
   
 
 
-    totalPuestos = (total) => {
-  
-  //  await this.setState({totalPuestos: this.state.totalPuestos+total });
-  
-    
-     // console.log("total "+this.state.totalPuestos)
 
-
-     console.log("Paola Cuastubien")
-    }
  
 
   
@@ -1322,7 +1329,7 @@ class Formcotizador extends Component {
 
                 <p>
                   <button className="btn btn-primary" type="button" data-bs-toggle="collapse" 
-                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos(this.state.viaje[i].valor )}  >
+                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos(this.state.viaje[i].valor,this.state.viaje[i].puesto )}  >
                     Selecionar Silla
                   </button>
                   {"   "}
@@ -1339,12 +1346,12 @@ class Formcotizador extends Component {
                       Tdetalles del bus
 
 
-                        <button className="btn btn-danger" onClick={() => this.puesto("p1")}>Puesto</button>
+                        <button id={"p1"+this.state.viaje[i].nodo} className="btn btn-danger" onClick={() => this.puesto("p1"+this.state.viaje[i].nodo)}>Puesto</button>
 
-                        <button className="btn btn-danger" onClick={() => this.puesto("p2")}>Puesto</button>
+                        <button id={"p2"+this.state.viaje[i].nodo} className="btn btn-danger" onClick={() => this.puesto("p2"+this.state.viaje[i].nodo)}>Puesto</button>
 
                         
-                        <button className="btn btn-danger" onClick={() => this.puesto("p3")}>Puesto</button>
+                        <button id={"p3"+this.state.viaje[i].nodo} className="btn btn-danger" onClick={() => this.puesto("p3"+this.state.viaje[i].nodo)}>Puesto</button>
 
 
 
