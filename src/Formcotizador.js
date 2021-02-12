@@ -35,7 +35,7 @@ class Formcotizador extends Component {
       nodo_precompra:'',
       puesto:'',
       usuarios:'',
-      totalPuestos:0,
+      totalPuestos:'0',
       valorPuesto:'',
       contador:0,
 
@@ -317,60 +317,33 @@ class Formcotizador extends Component {
 
         case "Ipiales Bogotá":
 
-
+          this.setState({ totalPuestos:0 });
           this.setRuta("Ipi-Bog")
 
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
-  
-            if (canal.val() !== null) {
-
-    
-              this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-              
-
-                {Object.keys(this.state.puesto).map(i => {
-       
-          
-         
-                 totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-             
-       
-               })}
-       
-               console.log(totalPuestos);
 
 
-      
-            } else {
-      
-              this.setState({ puesto: [] });
-      
-            }
-          });
-        
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").remove(
+            error => {
+              if (error) console.log(error)
+            });
+
+
+            
+
 
           break;
 
 
           case "Ipiales Cali":
-
+            this.setState({ totalPuestos:0 });
 
             this.setRuta("Ipi-Cal")
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").on("value", (canal) => {
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").remove(
+              error => {
+                if (error) console.log(error)
+              });
   
-              if (canal.val() !== null) {
-        
-      
-                this.setState({ ...this.state.puesto, puesto: canal.val() });
-        
-              } else {
-        
-                this.setState({ puesto: [] });
-        
-              }
-            });
 
            
             break;
@@ -379,49 +352,28 @@ class Formcotizador extends Component {
           case "Ipiales Medellin Sur":
 
           
-          
-          
+            this.setState({ totalPuestos:0 });
 
             this.setRuta("Ipi-Med")
 
-
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").on("value", (canal) => {
-  
-              if (canal.val() !== null) {
-        
-      
-                this.setState({ ...this.state.puesto, puesto: canal.val() });
-        
-              } else {
-        
-                this.setState({ puesto: [] });
-        
-              }
-            });
-  
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").remove(
+              error => {
+                if (error) console.log(error)
+              });
+            
             break;
 
 
           case "Bogotá Ipiales":
 
-
+            this.setState({ totalPuestos:0 });
           
             this.setRuta("Bog-Ipi")
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").on("value", (canal) => {
-  
-              if (canal.val() !== null) {
-        
-      
-                this.setState({ ...this.state.puesto, puesto: canal.val() });
-        
-              } else {
-        
-                this.setState({ puesto: [] });
-        
-              }
-            });
-
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").remove(
+              error => {
+                if (error) console.log(error)
+              });
 
           break;
 
@@ -431,46 +383,29 @@ class Formcotizador extends Component {
 
           case "Cali Ipiales":
 
-      
+            this.setState({ totalPuestos:0 });
 
               
             this.setRuta("Cal-Ipi")
             
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").on("value", (canal) => {
-  
-              if (canal.val() !== null) {
-        
-      
-                this.setState({ ...this.state.puesto, puesto: canal.val() });
-        
-              } else {
-        
-                this.setState({ puesto: [] });
-        
-              }
-            });
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").remove(
+              error => {
+                if (error) console.log(error)
+              });
 
 
             break;
 
             case "Medellin Sur Ipiales":
 
+              this.setState({ totalPuestos:0 });
 
               this.setRuta("Med-Ipi")
 
-              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").on("value", (canal) => {
-  
-                if (canal.val() !== null) {
-          
-        
-                  this.setState({ ...this.state.puesto, puesto: canal.val() });
-          
-                } else {
-          
-                  this.setState({ puesto: [] });
-          
-                }
-              });
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").remove(
+                error => {
+                  if (error) console.log(error)
+                });
     
               break;
 
@@ -482,12 +417,10 @@ class Formcotizador extends Component {
     }
 
 
-
-
     puesto = async (val) => {
 
       var valPuesto = this.state.valorPuesto
-
+      var totalPuestos = 0 
 
       var origen = document.getElementById("origen").value
       var destino = document.getElementById("destino").value
@@ -506,9 +439,11 @@ class Formcotizador extends Component {
       switch(origen+" "+destino){
 
 
+     
+
         case "Ipiales Bogotá":
 
-  
+          this.setState({ totalPuestos:0 });
 
           firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val,val_puesto:valPuesto},
           error => {
@@ -523,6 +458,19 @@ class Formcotizador extends Component {
       
     
               this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+
+              {Object.keys(this.state.puesto).map(i => {
+                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+            
+              })}
+      
+
+
+              this.setState({ totalPuestos: totalPuestos });
+
+
+
       
             } else {
       
@@ -537,6 +485,8 @@ class Formcotizador extends Component {
 
           case "Ipiales Cali":
 
+            this.setState({ totalPuestos:0 });
+
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val,val_puesto:valPuesto},
             error => {
               if (error) console.log(error)
@@ -549,6 +499,18 @@ class Formcotizador extends Component {
         
       
                 this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+ 
+
+                this.setState({ totalPuestos: totalPuestos });
+
         
               } else {
         
@@ -563,6 +525,7 @@ class Formcotizador extends Component {
             
           case "Ipiales Medellin Sur":
 
+            this.setState({ totalPuestos:0 });
               
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").push({id_pre_compra:"Ipi-Med",puesto:val,val_puesto:valPuesto},
             error => {
@@ -576,6 +539,16 @@ class Formcotizador extends Component {
         
       
                 this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+  
+
+                this.setState({ totalPuestos: totalPuestos });
+
         
               } else {
         
@@ -588,6 +561,8 @@ class Formcotizador extends Component {
 
 
           case "Bogotá Ipiales":
+
+            this.setState({ totalPuestos:0 });
 
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").push({id_pre_compra:"Bog-Ipi",puesto:val,val_puesto:valPuesto},
             error => {
@@ -603,6 +578,15 @@ class Formcotizador extends Component {
         
       
                 this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+  
+ 
+                this.setState({ totalPuestos: totalPuestos });
         
               } else {
         
@@ -619,6 +603,7 @@ class Formcotizador extends Component {
 
 
           case "Cali Ipiales":
+            this.setState({ totalPuestos:0 });
 
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").push({id_pre_compra:"Cal-Ipi",puesto:val,val_puesto:valPuesto},
             error => {
@@ -632,6 +617,14 @@ class Formcotizador extends Component {
         
       
                 this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+
+                this.setState({ totalPuestos: totalPuestos });
         
               } else {
         
@@ -645,6 +638,8 @@ class Formcotizador extends Component {
 
             case "Medellin Sur Ipiales":
 
+              this.setState({ totalPuestos:0 });
+
               firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").push({id_pre_compra:"Med-Ipi",puesto:val,val_puesto:valPuesto},
               error => {
                 if (error) console.log(error)
@@ -657,6 +652,15 @@ class Formcotizador extends Component {
           
         
                   this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                  {Object.keys(this.state.puesto).map(i => {
+                    totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+                
+                  })}
+          
+    
+
+                  this.setState({ totalPuestos: totalPuestos });
           
                 } else {
           
@@ -696,9 +700,21 @@ class Formcotizador extends Component {
   
     }
   
-    peticionDelete = () => {
+    peticionDelete  =async  () => {
   
     
+      var valPuesto = this.state.valorPuesto
+      var totalPuestos = 0 
+
+      var origen = document.getElementById("origen").value
+      var destino = document.getElementById("destino").value
+      var ip = await publicIp.v4()
+
+      var cadenas = ip.split(".");
+      var ip_sincomas = "";
+      for(var i = 0; i < cadenas.length;i++){
+        ip_sincomas = ip_sincomas+cadenas[i];
+      }
 
 
       if (window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.prereserva && this.state.prereserva.puesto}?`)) {
@@ -707,8 +723,218 @@ class Formcotizador extends Component {
             if (error) console.log(error)
           });
       }
+
+
+
+    
+      switch(origen+" "+destino){
+
+
+     
+
+        case "Ipiales Bogotá":
+
+          this.setState({ totalPuestos:0 });
+
+      
+
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
   
-    }
+            if (canal.val() !== null) {
+      
+    
+              this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+
+              {Object.keys(this.state.puesto).map(i => {
+                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+            
+              })}
+      
+
+
+              this.setState({ totalPuestos: totalPuestos });
+
+
+
+      
+            } else {
+      
+              this.setState({ puesto: [] });
+      
+            }
+          });
+        
+
+          break;
+
+
+          case "Ipiales Cali":
+
+            this.setState({ totalPuestos:0 });
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+ 
+
+                this.setState({ totalPuestos: totalPuestos });
+
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+           
+            break;
+
+            
+          case "Ipiales Medellin Sur":
+
+            this.setState({ totalPuestos:0 });
+                       
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+  
+
+                this.setState({ totalPuestos: totalPuestos });
+
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+  
+            break;
+
+
+          case "Bogotá Ipiales":
+
+            this.setState({ totalPuestos:0 });
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+  
+
+                this.setState({ totalPuestos: totalPuestos });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+
+          break;
+
+
+
+
+
+          case "Cali Ipiales":
+            this.setState({ totalPuestos:0 });
+            
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+  
+                console.log(totalPuestos);
+                this.setState({ totalPuestos: totalPuestos });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+
+            break;
+
+            case "Medellin Sur Ipiales":
+
+              this.setState({ totalPuestos:0 });
+
+
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").on("value", (canal) => {
+  
+                if (canal.val() !== null) {
+          
+        
+                  this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                  {Object.keys(this.state.puesto).map(i => {
+                    totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+                
+                  })}
+          
+    
+                  console.log(totalPuestos);
+                  this.setState({ totalPuestos: totalPuestos });
+          
+                } else {
+          
+                  this.setState({ puesto: [] });
+          
+                }
+              });
+    
+              break;
+
+            }
+
+  
+    };
   
     handleChange = e => {
   
@@ -1149,6 +1375,7 @@ class Formcotizador extends Component {
 
 
                                    <div className="col-md-2 col-sm-2">
+
                                      <button className="btn btn-danger" onClick={()=>this.seleccionarPuesto(this.state.puesto[i], i, 'Eliminar')}>Eliminar</button>
 
                                    </div>  
@@ -1175,7 +1402,7 @@ class Formcotizador extends Component {
 
 
                                     <div className="col-md-2 col-sm-2">
-                                     <input type="text" className="btn btn-danger" value={"$"+this.state.valorPuesto} />
+                                     <input type="text" className="btn btn-danger" value={"$"+this.state.totalPuestos} />
                                    </div>  
                         </div>
                           
