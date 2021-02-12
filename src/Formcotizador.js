@@ -35,8 +35,11 @@ class Formcotizador extends Component {
       nodo_precompra:'',
       puesto:'',
       usuarios:'',
-      totalPuestos:'0',
-    
+      totalPuestos:0,
+      valorPuesto:'',
+      contador:0,
+
+
       bandera: '0',
       modalInsertar: false,
       modalEditar: false,
@@ -71,6 +74,17 @@ class Formcotizador extends Component {
     };
   
   
+
+    acumulador = (val) =>{
+
+
+    //  await this.setState({ip: ip_sincomas });
+
+    console.log(val)
+ 
+     }
+    
+
   
     peticionGetFlotas = () => {
   
@@ -269,9 +283,17 @@ class Formcotizador extends Component {
       
     }
 
-    cargarPuestos = async ()=>{
+    setValorPuesto =async (rutaResult) =>{
+
+      await this.setState({ valorPuesto:rutaResult});
+      
+    }
+
+    cargarPuestos = async (valorPuesto)=>{
 
       
+
+      var totalPuestos = 0 
       var origen = document.getElementById("origen").value
       var destino = document.getElementById("destino").value
       var ip = await publicIp.v4()
@@ -284,6 +306,9 @@ class Formcotizador extends Component {
 
 
 
+
+
+     this.setValorPuesto(valorPuesto)
          
      this.setIp(ip_sincomas)
         
@@ -298,9 +323,24 @@ class Formcotizador extends Component {
           firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
   
             if (canal.val() !== null) {
-      
+
     
               this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+              
+
+                {Object.keys(this.state.puesto).map(i => {
+       
+          
+         
+                 totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+             
+       
+               })}
+       
+               console.log(totalPuestos);
+
+
       
             } else {
       
@@ -446,7 +486,9 @@ class Formcotizador extends Component {
 
     puesto = async (val) => {
 
-   
+      var valPuesto = this.state.valorPuesto
+
+
       var origen = document.getElementById("origen").value
       var destino = document.getElementById("destino").value
       var ip = await publicIp.v4()
@@ -468,7 +510,7 @@ class Formcotizador extends Component {
 
   
 
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val},
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val,val_puesto:valPuesto},
           error => {
             if (error) console.log(error)
 
@@ -495,7 +537,7 @@ class Formcotizador extends Component {
 
           case "Ipiales Cali":
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val,val_puesto:valPuesto},
             error => {
               if (error) console.log(error)
             });
@@ -522,7 +564,7 @@ class Formcotizador extends Component {
           case "Ipiales Medellin Sur":
 
               
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").push({id_pre_compra:"Ipi-Med",puesto:val},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").push({id_pre_compra:"Ipi-Med",puesto:val,val_puesto:valPuesto},
             error => {
               if (error) console.log(error)
             });
@@ -547,7 +589,7 @@ class Formcotizador extends Component {
 
           case "Bogotá Ipiales":
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").push({id_pre_compra:"Bog-Ipi",puesto:val},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").push({id_pre_compra:"Bog-Ipi",puesto:val,val_puesto:valPuesto},
             error => {
               if (error) console.log(error)
             });
@@ -578,7 +620,7 @@ class Formcotizador extends Component {
 
           case "Cali Ipiales":
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").push({id_pre_compra:"Cal-Ipi",puesto:val},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").push({id_pre_compra:"Cal-Ipi",puesto:val,val_puesto:valPuesto},
             error => {
               if (error) console.log(error)
             });
@@ -603,7 +645,7 @@ class Formcotizador extends Component {
 
             case "Medellin Sur Ipiales":
 
-              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").push({id_pre_compra:"Med-Ipi",puesto:val},
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").push({id_pre_compra:"Med-Ipi",puesto:val,val_puesto:valPuesto},
               error => {
                 if (error) console.log(error)
               });
@@ -627,6 +669,8 @@ class Formcotizador extends Component {
 
 
       }
+
+      
 
     };
 
@@ -716,7 +760,9 @@ class Formcotizador extends Component {
 
 
      if(origen!="Seleccione su origen"){
-        if(destino != "Selecciones destino"){
+
+        if(destino != "Seleccione su destino"){
+          
 
 
         if(fecha){
@@ -889,7 +935,7 @@ class Formcotizador extends Component {
                 <label for="origen" className="form-label text-muted">Origen</label> 
                 
                 <select id="origen" name="origenes" className="form-select" aria-label="Default select example" onClick={() => this.destino()} required>
-                  <option value="" disabled  selected>Seleccione Ruta Origen</option>
+                  <option value="Seleccione su origen" disabled  selected>Seleccione su origen</option>
                   {Object.keys(this.state.origen).map(i => {
        
                       return<option value={this.state.origen[i].origen}>{this.state.origen[i].origen}</option>
@@ -901,7 +947,7 @@ class Formcotizador extends Component {
               <div className="col-md-3 col-sm-6">
                 <label for="destino" className="form-label text-muted">Origen</label> 
                 <select id="destino" className="form-select" aria-label="Default select example">
-                  <option value="" disabled selected >Seleccione Ruta Destino</option>
+                  <option value="Seleccione su destino" disabled selected >Seleccione su destino</option>
                   {Object.keys("1").map(i => {
        
                     switch(this.state.destinoform){
@@ -1050,7 +1096,7 @@ class Formcotizador extends Component {
 
                 <p>
                   <button className="btn btn-primary" type="button" data-bs-toggle="collapse" 
-                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos()}  >
+                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos(this.state.viaje[i].valor )}  >
                     Selecionar Silla
                   </button>
                   {"   "}
@@ -1104,15 +1150,21 @@ class Formcotizador extends Component {
 
                                    <div className="col-md-2 col-sm-2">
                                      <button className="btn btn-danger" onClick={()=>this.seleccionarPuesto(this.state.puesto[i], i, 'Eliminar')}>Eliminar</button>
+
                                    </div>  
+
+                                  
+                           
+                               
+
 
 
                                    </div>
 
-                                        {
-                                            <input value={this.state.viaje[i].valor}/>
 
-                                        }
+                                     
+
+
 
                                    </div>
 
@@ -1123,7 +1175,7 @@ class Formcotizador extends Component {
 
 
                                     <div className="col-md-2 col-sm-2">
-                                     <input type="text" className="btn btn-danger" value={"$"+this.state.totalPuestos} />
+                                     <input type="text" className="btn btn-danger" value={"$"+this.state.valorPuesto} />
                                    </div>  
                         </div>
                           
