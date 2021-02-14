@@ -14,8 +14,12 @@ import bolivariano from './imagenes/bol.jpeg';
 
 import  publicIp from 'public-ip';
 
-
+//Importo archivos de estilos he imagenes
 import './Formcotizador.css'
+import bus from './imagenes/BUS2.png';
+import asientodisponible from './imagenes/asientodisponible.png';
+import asientoNOdisponible from './imagenes/asientoNOdisponible.png';
+import wc from './imagenes/wc.png';
 
 class Formcotizador extends Component {
 
@@ -457,7 +461,7 @@ class Formcotizador extends Component {
         ip_sincomas = ip_sincomas+cadenas[i];
       }
 
-
+      
 
 
     
@@ -466,7 +470,7 @@ class Formcotizador extends Component {
 
         case "Ipiales Bogotá":
 
-  
+
 
           firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val},
           error => {
@@ -865,7 +869,7 @@ class Formcotizador extends Component {
 
     totalPuestos = (total) => {
   
-  //  await this.setState({totalPuestos: this.state.totalPuestos+total });
+      //  await this.setState({totalPuestos: this.state.totalPuestos+total });
   
     
      // console.log("total "+this.state.totalPuestos)
@@ -875,12 +879,29 @@ class Formcotizador extends Component {
     }
  
 
+
+
+
+
+
+
+
+
+
+
+
+    // FUNCIONES PARA EL CAMBIO DE IMAGEN
+     ocultar = () =>{
+      document.getElementById('bus1').style.display = 'none';
+    }
+    mostrar = () =>{
+      document.getElementById('bus2').style.display = 'block';
+      }
   
     render() {
     //  let idUsuarios = this.props.cat
-      return (
-  
-        <>
+      return (  
+      <>
         
         <div className="container buscador p-1">
           <div className="card p-3">
@@ -955,43 +976,31 @@ class Formcotizador extends Component {
             </div>
           </div>
         </div>
+
         <br></br>
 
 
-
+        <div>      
           <select class="form-select" aria-label="Default select example">
-            <option selected disabled>Lista...</option>
-            {Object.keys(this.state.flotas).map(i => {
-       
-                // console.log(i);
-                //  console.log(this.state.flotas[i].nombre);
-    
-                return<option value={this.state.flotas[i].nombre}>{this.state.flotas[i].nombre}</option>
-     
-             })}
-           
-          </select>
-
-
+          <option selected disabled>Lista...</option>
+          {Object.keys(this.state.flotas).map(i => {
       
-         
-          <br></br>
+              // console.log(i);
+              //  console.log(this.state.flotas[i].nombre);
+  
+              return<option value={this.state.flotas[i].nombre}>{this.state.flotas[i].nombre}</option>
+    
+            })}
+          
+          </select>
+        </div>
+        
+        <br></br>
 
-
-
-          <div class="card">
-            <div class="card-body">
-              
-          <div class="mb-3">
-                <br />
-                    <button className="btn btn-success" onClick={() => this.setState({ modalInsertar: true })}>Insertar</button>
-                <br />
-                <br />
-             </div>
-
-
-                
-            <div id="contenedor"   className="container resultados">
+        <div class="card">
+          <div class="card-body">
+                                        
+            <div id="contenedor" className="container resultados">
 
               <div className="row titulos">
                 <ul class="list-group list-group-horizontal p-0">
@@ -1001,226 +1010,314 @@ class Formcotizador extends Component {
                   <li class="list-group-item col-md-2 col-sm-2 text-center">Precio</li>
                   <li class="list-group-item col-md-2 col-sm-2 text-center ">Opciones</li>
                   <li class="list-group-item col-md-2 col-sm-2 text-center ">Opciones</li>
-                </ul>           
-       
+                </ul>                  
               </div>
-           
+            
 
               {Object.keys(this.state.viaje).map(i => { 
 
-              return <div className="card listahorario mx-1">
-              <div className="row my-2 p-2">
-                <div className="col-md-2 col-sm-2 text-center">             
-                  {
-                    this.state.viaje[i].tipo_bus=="2G"? <img width="200px" src={bolivariano}></img>:   
-                    this.state.viaje[i].tipo_bus=="2G Gold"? <img width="200px" src={bolivariano}></img>:<img width="200px" src={continental}></img>
-                  }
+                return <div className="card listahorario my-2">
+                <div className="row my-2 p-2">
+                  <div className="col-md-2 col-sm-2 text-center">             
+                    {
+                      this.state.viaje[i].tipo_bus=="2G"? <img width="200px" src={bolivariano}></img>:   
+                      this.state.viaje[i].tipo_bus=="2G Gold"? <img width="200px" src={bolivariano}></img>:<img width="200px" src={continental}></img>
+                    }
+                  </div>
+
+                  <div className="col-md-2 col-sm-2 text-center">
+                    {"Salida: "+this.state.viaje[i].horario}
+                    {<br></br>}
+                    {"Duracion: "+this.state.viaje[i].duracion}
+                  </div>
+
+                  <div className="col-md-2 col-sm-2 text-center border-end ">
+                    {this.state.viaje[i].tipo_bus}
+                  </div>
+
+                  <div className="col-md-2 col-sm-2">
+                    {this.state.viaje[i].terminal_salida}
+                  </div>
+                  
+                  <div className="col-md-2 col-sm-2">
+                    {this.state.viaje[i].terminal_llegada}
+                  </div>
+                  
+                  <div className="col-md-2 col-sm-2 text-center"> 
+                    <div>
+                      { "$"+ this.state.viaje[i].valor   }   
+                    </div>    
+                    <div>           
+                    <p>
+                      <button className="btn btn-primary" type="button" data-bs-toggle="collapse" 
+                      data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos()}  >
+                        Selecionar Silla
+                      </button>
+                    </p>
+                  </div>                                         
+                </div>              
                 </div>
-
-                <div className="col-md-2 col-sm-2 text-center">
-                  {"Salida: "+this.state.viaje[i].horario}
-                  {<br></br>}
-                  {"Duracion: "+this.state.viaje[i].duracion}
-                </div>
-
-                <div className="col-md-2 col-sm-2 text-center border-end ">
-                  {this.state.viaje[i].tipo_bus}
-                </div>
-
-                <div className="col-md-2 col-sm-2">
-                 {this.state.viaje[i].terminal_salida}
-                </div>
-                
-                <div className="col-md-2 col-sm-2">
-                 {this.state.viaje[i].terminal_llegada}
-                </div>
-                
-                <div className="col-md-2 col-sm-2 text-center "> 
-
-              	{
-                
-                
-                  "$"+ this.state.viaje[i].valor 
-
-                
-                
-                }
-
-                {<br></br>}
-
-                <p>
-                  <button className="btn btn-primary" type="button" data-bs-toggle="collapse" 
-                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos()}  >
-                    Selecionar Silla
-                  </button>
-                  {"   "}
-                </p>           
-                
-                
-              </div>
               
-              </div>
-            
-              <div className="detalles">
-              <div className="collapse col-md-12" id={"c"+this.state.viaje[i].nodo }>
-                    <div className="card card-body">
-                      Tdetalles del bus
+                
+                  <div className="collapse col-md-12 " id={"c"+this.state.viaje[i].nodo }>
+                    {/* DETALLES AÑADIDDOS DEL BUS  */}
+                    <div className="card card-body">                                                
+                        <div className="row">
 
-                      <div className="card bus ">
-                        <div className="card-body ">
-                          <div className="">
-                          
+                          <div className="col-md-9">
+                            <div className="text-blacck">
+                              <img src={bus} className="card-img" alt="..."/>
+                              <div className="card-img-overlay"> 
+
+                                <div className="mt-3 asientos">
+                                  <div className="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                                    
+                                    <button type="button"  className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <img src={wc} alt=""/>
+
+                                  </div>
+
+                                  <div className="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                                                                      
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>                           
+
+                                  </div>
+                                </div>
+
+                                <div className="asientos">
+
+                                  <div className="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                                                                      
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>
+                                    <button type="button" className="btn">
+                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                    </button>                           
+
+                                  </div>
+                                </div>
+                                                                                                                          
+                              </div>
+                            </div>                         
                           </div>
-                            
+
+                          <div className="card col-md-3">
+                            <table className="table table-dark">
+                              <thead className="table-dark">
+                                <tr>
+                                  <th scope="col">#</th>
+                                  <th scope="col">First</th>
+                                  
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">1</th>
+                                  <td>Mark</td>                                 
+                                </tr>
+                              </tbody>
+                            </table>                            
+                          </div>
+
                         </div>
-                      </div>
-
-
-
-
-                        <button className="btn btn-danger" onClick={() => this.puesto("p1")}>Puesto</button>
-
-                        <button className="btn btn-danger" onClick={() => this.puesto("p2")}>Puesto</button>
-
                         
-                        <button className="btn btn-danger" onClick={() => this.puesto("p3")}>Puesto</button>
-
-
-
-
-
-                        <div id="contenedor"   className="container resultados">
-
-                          <div className="row titulos">
-                            <ul class="list-group list-group-horizontal p-0">
-                              <li class="list-group-item col-md-2 col-sm-2 text-center">Pesto</li>
-                              
-                            </ul>           
-
-                          </div>
-
-
-                              {Object.keys(this.state.puesto).map(i => { 
-                                
-                              
-                                 return <div className="listahorario mx-1">
-                                 <div className="row my-2 p-2">
-
-            
-
-                                   <div className="col-md-2 col-sm-2 text-center border-end ">
-                                     {this.state.puesto[i].puesto}
-                                   </div>
-
-
-                                   <div className="col-md-2 col-sm-2">
-                                     <button className="btn btn-danger" onClick={()=>this.seleccionarPuesto(this.state.puesto[i], i, 'Eliminar')}>Eliminar</button>
-                                   </div>  
-
-
-                                   </div>
-
-                                        {
-                                            <input value={this.state.viaje[i].valor}/>
-
-                                        }
-
-                                   </div>
-
-                          
-
-
-                                  })}
-
-
-                                    <div className="col-md-2 col-sm-2">
-                                     <input type="text" className="btn btn-danger" value={"$"+this.state.totalPuestos} />
-                                   </div>  
-                        </div>
-                          
-
-
+                        
                       
-                      <br></br>
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      {/* <button className="btn btn-danger" onClick={() => this.puesto("p1")}>Puesto</button>
+                      <button id="p1" className="btn btn-danger" onClick={() => this.puesto("p2")}>Puesto</button>                          
+                      <button className="btn btn-danger" onClick={() => this.puesto("p3")}>Puesto</button>
+                      <div id="contenedor"   className="container resultados">
+                        <div className="row titulos">
+                          <ul class="list-group list-group-horizontal p-0">
+                            <li class="list-group-item col-md-2 col-sm-2 text-center">Pesto</li>                               
+                          </ul>           
+                        </div>
+
+                        {Object.keys(this.state.puesto).map(i => {                                                                   
+                          return <div className="listahorario mx-1">
+                          <div className="row my-2 p-2">          
+                            <div className="col-md-2 col-sm-2 text-center border-end ">
+                              {this.state.puesto[i].puesto}
+                            </div>
+                            <div className="col-md-2 col-sm-2">
+                              <button className="btn btn-danger" onClick={()=>this.seleccionarPuesto(this.state.puesto[i], i, 'Eliminar')}>Eliminar</button>
+                            </div>  
+                          </div>
+                          </div>                         
+                        })}
+
+
+                          <div className="col-md-2 col-sm-2">
+                            <input type="text" className="btn btn-danger" value={"$"+this.state.totalPuestos} />
+                          </div>
+                        </div> 
+                      </div>       */}
+                      </div>
                     </div>
                   </div>
-              </div>
-              </div>
-            })}
-
-          </div>
-  
-
-        
-            </div>    
-          </div>
-  
-  
-  
-  
-            <Modal isOpen={this.state.modalInsertar}>
-  
-              <ModalHeader>Insertar Registro</ModalHeader>
-              <ModalBody>
-  
-                <div className="form-group">
-                  <label>Canal: </label>
-                  <br />
-                  <input type="text" className="form-control" name="canal" onChange={this.handleChange} />
-                  <br />
-                  <label>País: </label>
-                  <br />
-                  <input type="text" className="form-control" name="pais" onChange={this.handleChange} />
-                  <br />
-                  <label>Idioma: </label>
-                  <br />
-                  <input type="text" className="form-control" name="idioma" onChange={this.handleChange} />
-                  <br />
-                  <label>Cantidad de Suscriptores (millones): </label>
-                  <br />
-                  <input type="text" className="form-control" name="suscriptores" onChange={this.handleChange} />
-                </div>
-  
-              </ModalBody>
-              <ModalFooter>
-  
-                <button className="btn btn-primary" onClick={() => this.peticionPost()}>Insertar</button>{"   "}
-                <button className="btn btn-danger" onClick={() => this.setState({ modalInsertar: false })}>Cancelar</button>
-  
-              </ModalFooter>
-              
-            </Modal>
-  
-  
-  
-            <Modal isOpen={this.state.modalEditar}>
-              <ModalHeader>Editar Registro</ModalHeader>
-              <ModalBody>
-                <div className="form-group">
-                  <label>Canal: </label>
-                  <br />
-                  <input type="text" className="form-control" name="canal" onChange={this.handleChange} value={this.state.form && this.state.form.canal} />
-                  <br />
-                  <label>País: </label>
-                  <br />
-                  <input type="text" className="form-control" name="pais" onChange={this.handleChange} value={this.state.form && this.state.form.pais} />
-                  <br />
-                  <label>Idioma: </label>
-                  <br />
-                  <input type="text" className="form-control" name="idioma" onChange={this.handleChange} value={this.state.form && this.state.form.idioma} />
-                  <br />
-                  <label>Cantidad de Suscriptores (millones): </label>
-                  <br />
-                  <input type="text" className="form-control" name="suscriptores" onChange={this.handleChange} value={this.state.form && this.state.form.suscriptores} />
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <button className="btn btn-primary" onClick={() => this.peticionPut()}>Editar</button>{"   "}
-                <button className="btn btn-danger" onClick={() => this.setState({ modalEditar: false })}>Cancelar</button>
-              </ModalFooter>
-            </Modal>
+                
+              })}
             
-          </>
+            </div>    
+          </div>    
+        </div>
+       
+
+        {/* // <Modal isOpen={this.state.modalInsertar}>
+
+        //   <ModalHeader>Insertar Registro</ModalHeader>
+        //   <ModalBody>
+
+        //     <div className="form-group">
+        //       <label>Canal: </label>
+        //       <br />
+        //       <input type="text" className="form-control" name="canal" onChange={this.handleChange} />
+        //       <br />
+        //       <label>País: </label>
+        //       <br />
+        //       <input type="text" className="form-control" name="pais" onChange={this.handleChange} />
+        //       <br />
+        //       <label>Idioma: </label>
+        //       <br />
+        //       <input type="text" className="form-control" name="idioma" onChange={this.handleChange} />
+        //       <br />
+        //       <label>Cantidad de Suscriptores (millones): </label>
+        //       <br />
+        //       <input type="text" className="form-control" name="suscriptores" onChange={this.handleChange} />
+        //     </div>
+
+        //   </ModalBody>
+        //   <ModalFooter>
+
+        //     <button className="btn btn-primary" onClick={() => this.peticionPost()}>Insertar</button>{"   "}
+        //     <button className="btn btn-danger" onClick={() => this.setState({ modalInsertar: false })}>Cancelar</button>
+
+        //   </ModalFooter>
+          
+        // </Modal> 
+  
+        // <Modal isOpen={this.state.modalEditar}>
+        //   <ModalHeader>Editar Registro</ModalHeader>
+        //   <ModalBody>
+        //     <div className="form-group">
+        //       <label>Canal: </label>
+        //       <br />
+        //       <input type="text" className="form-control" name="canal" onChange={this.handleChange} value={this.state.form && this.state.form.canal} />
+        //       <br />
+        //       <label>País: </label>
+        //       <br />
+        //       <input type="text" className="form-control" name="pais" onChange={this.handleChange} value={this.state.form && this.state.form.pais} />
+        //       <br />
+        //       <label>Idioma: </label>
+        //       <br />
+        //       <input type="text" className="form-control" name="idioma" onChange={this.handleChange} value={this.state.form && this.state.form.idioma} />
+        //       <br />
+        //       <label>Cantidad de Suscriptores (millones): </label>
+        //       <br />
+        //       <input type="text" className="form-control" name="suscriptores" onChange={this.handleChange} value={this.state.form && this.state.form.suscriptores} />
+        //     </div>
+        //   </ModalBody>
+        //   <ModalFooter>
+        //     <button className="btn btn-primary" onClick={() => this.peticionPut()}>Editar</button>{"   "}
+        //     <button className="btn btn-danger" onClick={() => this.setState({ modalEditar: false })}>Cancelar</button>
+        //   </ModalFooter>
+        // </Modal> */}
+            
+      </>
       );
     }
   }
