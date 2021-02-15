@@ -15,6 +15,20 @@ import bolivariano from './imagenes/bol.jpeg';
 import  publicIp from 'public-ip';
 
 
+
+import './Formcotizador.css'
+import bus from './imagenes/BUS2.png';
+import asientodisponible from './imagenes/asientodisponible.png';
+import asientoNOdisponible from './imagenes/asientoNOdisponible.png';
+import wc from './imagenes/wc.png';
+import origen from './imagenes/origen.png';
+import destino from './imagenes/destino.png';
+import fecha from './imagenes/fecha.png';
+
+
+
+
+
 import './Formcotizador.css'
 
 class Formcotizador extends Component {
@@ -64,27 +78,17 @@ class Formcotizador extends Component {
       },
 
       form: {
-        canal: '',
-        idioma: '',
-        pais: '',
-        suscriptores: ''
+        nombreTitular: '',
+        apellidoTitular: '',
+        tipoDocumento: '',
+        numeroDocumento: '',
+        fechaNacimiento: ''
       },
   
       id: 0
     };
   
   
-
-    acumulador = (val) =>{
-
-
-    //  await this.setState({ip: ip_sincomas });
-
-    console.log(val)
- 
-     }
-    
-
   
     peticionGetFlotas = () => {
   
@@ -291,7 +295,7 @@ class Formcotizador extends Component {
 
     cargarPuestos = async (valorPuesto,puesto)=>{
 
-      document.getElementById(puesto).disabled=false;
+     
 
 
 
@@ -317,11 +321,21 @@ class Formcotizador extends Component {
       switch(origen+" "+destino){
 
 
+
+   
+
         case "Ipiales Bogotá":
 
           this.setState({ totalPuestos:0 });
           this.setRuta("Ipi-Bog")
 
+          {Object.keys(this.state.puesto).map(i => {
+
+            document.getElementById(this.state.puesto[i].puesto).disabled=false;   
+        
+          })}
+  
+      
 
 
           firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").remove(
@@ -329,6 +343,8 @@ class Formcotizador extends Component {
               if (error) console.log(error)
             });
 
+
+ 
 
             
 
@@ -341,11 +357,22 @@ class Formcotizador extends Component {
 
             this.setRuta("Ipi-Cal")
 
+            {Object.keys(this.state.puesto).map(i => {
+
+              document.getElementById(this.state.puesto[i].puesto).disabled=false;   
+          
+            })}
+    
+
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").remove(
               error => {
                 if (error) console.log(error)
               });
   
+
+
+
+
 
            
             break;
@@ -357,6 +384,13 @@ class Formcotizador extends Component {
             this.setState({ totalPuestos:0 });
 
             this.setRuta("Ipi-Med")
+
+            {Object.keys(this.state.puesto).map(i => {
+
+              document.getElementById(this.state.puesto[i].puesto).disabled=false;   
+          
+            })}
+    
 
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").remove(
               error => {
@@ -371,6 +405,13 @@ class Formcotizador extends Component {
             this.setState({ totalPuestos:0 });
           
             this.setRuta("Bog-Ipi")
+
+            {Object.keys(this.state.puesto).map(i => {
+
+              document.getElementById(this.state.puesto[i].puesto).disabled=false;   
+          
+            })}
+    
 
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").remove(
               error => {
@@ -389,6 +430,13 @@ class Formcotizador extends Component {
 
               
             this.setRuta("Cal-Ipi")
+
+            {Object.keys(this.state.puesto).map(i => {
+
+              document.getElementById(this.state.puesto[i].puesto).disabled=false;   
+          
+            })}
+    
             
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").remove(
               error => {
@@ -403,6 +451,13 @@ class Formcotizador extends Component {
               this.setState({ totalPuestos:0 });
 
               this.setRuta("Med-Ipi")
+
+              {Object.keys(this.state.puesto).map(i => {
+
+                document.getElementById(this.state.puesto[i].puesto).disabled=false;   
+            
+              })}
+      
 
               firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").remove(
                 error => {
@@ -1072,6 +1127,21 @@ class Formcotizador extends Component {
     }
 
 
+
+
+    continuar = async () => {
+
+
+
+        firebase.database().ref().child("compra").child("Ipi_Bog").push(this.state.puesto,
+        error => {
+          if (error) console.log(error)
+        });
+
+    }
+
+
+
     peticionGetRutas = () => {
 
 
@@ -1083,10 +1153,6 @@ class Formcotizador extends Component {
       let year = date.getFullYear()
       
  
-      
-
-
-
 
       firebase.database().ref().child("origen").on("value", (canal) => {
   
@@ -1149,9 +1215,94 @@ class Formcotizador extends Component {
     
     }
   
+    peticionCompra = () => {
+
+      var nombre = document.getElementById("nombreTitular").value
+      var apellido = document.getElementById("apellidoTitular").value
+      var tipodocumento = document.getElementById("tipoDocumento").value
+      var numerodocumento = document.getElementById("numeroDocumento").value
+      var fechanacimiento = document.getElementById("fechaNacimiento").value
 
 
 
+
+      if(nombre||apellido||numerodocumento||fechanacimiento){
+
+        if(tipodocumento!="Seleccione Documento"){
+
+            //pasareala de pagos 
+
+
+    
+          
+          /*
+        
+            var html = '<form>'+
+            '<script'+
+              'src=https://checkout.epayco.co/checkout.js'+
+              'class="epayco-button"'+
+              'data-epayco-key="491d6a0b6e992cf924edd8d3d088aff1"'+
+              'data-epayco-amount="50000"'+
+              'data-epayco-name="Vestido Mujer Primavera"'+
+              'data-epayco-description="Vestido Mujer Primavera"'+
+              'data-epayco-currency="cop"'+
+              'data-epayco-country="co"'+
+              'data-epayco-test="true"'+
+              'data-epayco-external="false"'+
+              'data-epayco-response="https://ejemplo.com/respuesta.html"'+
+              'data-epayco-confirmation="https://ejemplo.com/confirmacion">'+
+
+          '</script>'+
+          '</form>';*/
+
+
+      /*    var handler = ePayco.checkout.configure({
+  				key: '45b960805ced5c27ce34b1600b4b9f54',
+  				test: true
+  			})*/
+ 
+
+        var epayco = require('epayco-sdk-node')({
+          apiKey: '65caa5c799b54e82634b6daa4d39161d',
+          privateKey: 'ea7949bd5ba30ad38441faefe3637c19',
+          lang: 'ES',
+          test: true
+      })
+
+
+   
+
+        }else{
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Debe seleccionar tipo documento',
+        
+          })
+        }
+
+
+
+      }else{
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Debe complementar la información',
+      
+        })
+      }
+
+      
+/*
+  
+      firebase.database().ref().child("compra").push(this.state.form,
+        error => {
+          if (error) console.log(error)
+        });
+      this.setState({ modalInsertar: false });
+  */
+    }
  
 
   
@@ -1214,7 +1365,8 @@ class Formcotizador extends Component {
                                   </>                            
                                         );
                                 break;
-                    }
+                   
+                              }
 
                   })}
                 </select>
@@ -1329,7 +1481,7 @@ class Formcotizador extends Component {
 
                 <p>
                   <button className="btn btn-primary" type="button" data-bs-toggle="collapse" 
-                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos(this.state.viaje[i].valor,this.state.viaje[i].puesto )}  >
+                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos(this.state.viaje[i].valor)}  >
                     Selecionar Silla
                   </button>
                   {"   "}
@@ -1387,23 +1539,13 @@ class Formcotizador extends Component {
 
                                    </div>  
 
-                                  
-                           
-                               
-
-
 
                                    </div>
 
 
-                                     
-
-
-
                                    </div>
 
-                          
-
+                        
 
                                   })}
 
@@ -1411,6 +1553,10 @@ class Formcotizador extends Component {
                                     <div className="col-md-2 col-sm-2">
                                      <input type="text" className="btn btn-danger" value={"$"+this.state.totalPuestos} />
                                    </div>  
+
+                                   <div className="col-md-2 col-sm-2">
+                                     <input type="text" className="btn btn-danger" value="Continuar"  onClick={()=>this.setState({modalInsertar: true})}/>
+                                   </div> 
                         </div>
                           
 
@@ -1435,31 +1581,52 @@ class Formcotizador extends Component {
   
             <Modal isOpen={this.state.modalInsertar}>
   
-              <ModalHeader>Insertar Registro</ModalHeader>
+              <ModalHeader>Titular Reserva</ModalHeader>
               <ModalBody>
   
                 <div className="form-group">
-                  <label>Canal: </label>
+                  <label>Nomre Titular: </label>
                   <br />
-                  <input type="text" className="form-control" name="canal" onChange={this.handleChange} />
+                  <input id="nombreTitular"  type="text" className="form-control" name="nombreTitular" onChange={this.handleChange} />
                   <br />
-                  <label>País: </label>
+                  <label>Apellido Titular: </label>
                   <br />
-                  <input type="text" className="form-control" name="pais" onChange={this.handleChange} />
+                  <input id="apellidoTitular" type="text" className="form-control" name="apellidoTitular" onChange={this.handleChange} />
                   <br />
-                  <label>Idioma: </label>
+                  <label>Tipo Documento: </label>
                   <br />
-                  <input type="text" className="form-control" name="idioma" onChange={this.handleChange} />
+
+                  <select id="tipoDocumento" className="form-control" name="tipoDocumento" onChange={this.handleChange}  >
+                      <option selected disabled value="Seleccione Documento">Seleccione Documento</option>
+                      <option value="C.c">C.c</option>
+                      <option value="T.i">T.i</option>
+                      <option value="PEP">PEP</option>
+           
+                  </select>
+
+
                   <br />
-                  <label>Cantidad de Suscriptores (millones): </label>
+                  <label>Numero Docuemnto </label>
                   <br />
-                  <input type="text" className="form-control" name="suscriptores" onChange={this.handleChange} />
+                  <input id="numeroDocumento" type="text" className="form-control" name="numeroDocumento" onChange={this.handleChange} />
+
+                  <br />
+                  <label>Fecha Nacimiento </label>
+                  <br />
+                  <input id="fechaNacimiento" type="date" className="form-control" name="fechaNacimiento" onChange={this.handleChange} />
+
+                  <div id="pasarela"></div>
+
+
                 </div>
-  
+
+
+
+      
               </ModalBody>
               <ModalFooter>
   
-                <button className="btn btn-primary" onClick={() => this.peticionPost()}>Insertar</button>{"   "}
+                <button className="btn btn-primary" onClick={() => this.peticionCompra()}>Reservar</button>{"   "}
                 <button className="btn btn-danger" onClick={() => this.setState({ modalInsertar: false })}>Cancelar</button>
   
               </ModalFooter>
