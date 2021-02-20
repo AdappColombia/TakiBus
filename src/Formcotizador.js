@@ -14,9 +14,6 @@ import bolivariano from './imagenes/bol.jpeg';
 
 import  publicIp from 'public-ip';
 
-<<<<<<< HEAD
-//Importo archivos de estilos he imagenes
-=======
 
 
 import './Formcotizador.css'
@@ -32,80 +29,54 @@ import fecha from './imagenes/fecha.png';
 
 
 
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 import './Formcotizador.css'
-import bus from './imagenes/BUS2.png';
-import asientodisponible from './imagenes/asientodisponible.png';
-import asientoNOdisponible from './imagenes/asientoNOdisponible.png';
-import wc from './imagenes/wc.png';
-import origen from './imagenes/origen.png';
-import destino from './imagenes/destino.png';
-import fecha from './imagenes/fecha.png';
 
 class Formcotizador extends Component {
 
 
-  state = {
-    data: [],
-    login: [],
-    flotas:[],
-    rutas:[],
-    origen:[],
-    viaje:[],
-    fecha:[],
-    puestos:[],
-    pre_compra:[],
-    ip:'',
-    ruta:'',
-    nodo_precompra:'',
-    puesto:'',
-    usuarios:'',
-    totalPuestos:'0',
-    valorPuesto:'',
-    contador:0,
+    state = {
+      data: [],
+      login: [],
+      flotas:[],
+      rutas:[],
+      origen:[],
+      viaje:[],
+      fecha:[],
+      puestos:[],
+      pre_compra:[],
+      ip:'',
+      ruta:'',
+      nodo_precompra:'',
+      puesto:'',
+      usuarios:'',
+      totalPuestos:'0',
+      valorPuesto:'',
+      contador:0,
 
 
-    bandera: '0',
-    modalInsertar: false,
-    modalEditar: false,
+      bandera: '0',
+      modalInsertar: false,
+      modalEditar: false,
 
-    compra:{
-       id_compra:'',
-       fecha:'',
-       nombre:'',
-       apellido:'',
-       metodo_pago:'',
-       total:'',
-       estado:'' 
-    },
-
-
-
-
-
-    prereserva: {
-      puesto: '',
-    
-    },
-
-<<<<<<< HEAD
-    form: {
-      nombreTitular: '',
-      apellidoTitular: '',
-      tipoDocumento: '',
-      numeroDocumento: '',
-      fechaNacimiento: ''
-    },
-
-    id: 0
-  };
+      compra:{
+         id_compra:'',
+         fecha:'',
+         nombre:'',
+         apellido:'',
+         metodo_pago:'',
+         total:'',
+         estado:'' 
+      },
 
 
 
-  peticionGetFlotas = () => {
 
-    firebase.database().ref().child("flotas").on("value", (canal) => {
-=======
+
+      prereserva: {
+        puesto: '',
+      
+      },
+
       form: {
         nombreTitular: '',
         apellidoTitular: '',
@@ -136,67 +107,33 @@ class Formcotizador extends Component {
   
     };
   
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
-      if (canal.val() !== null) {
+    formatCurrency=(locales, currency, fractionDigits, number)=> {
 
-        this.setState({ ...this.state.flotas, flotas: canal.val() });
+      var formatted = new Intl.NumberFormat(locales, {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: fractionDigits
+      }).format(number);
+      return formatted;
 
-      } else {
+    }
 
-        this.setState({ flotas: [] });
-
-      }
-    });
-
-  };
-
-
-  formatCurrency=(locales, currency, fractionDigits, number)=> {
-
-    var formatted = new Intl.NumberFormat(locales, {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: fractionDigits
-    }).format(number);
-    return formatted;
-
-  }
-
-  peticionViaje = (origen,destino) => {
+    peticionViaje = (origen,destino) => {
 
 
-    this.setState({ viaje: [] });
+      this.setState({ viaje: [] });
 
 
 
 
-    switch(origen+" "+destino){
+      switch(origen+" "+destino){
 
 
-      case "Ipiales Bogotá":
+        case "Ipiales Bogotá":
 
 
-        firebase.database().ref().child("viaje").child("Ipi-Bog").on("value", (canal) => {
-
-          if (canal.val() !== null) {
-  
-            this.setState({ ...this.state.viaje, viaje: canal.val() });
-    
-          } else {
-    
-            this.setState({ viaje: [] });
-    
-          }
-        });
-
-        break;
-
-
-        case "Ipiales Cali":
-
-
-          firebase.database().ref().child("viaje").child("Ipi-Cal").on("value", (canal) => {
+          firebase.database().ref().child("viaje").child("Ipi-Bog").on("value", (canal) => {
   
             if (canal.val() !== null) {
     
@@ -212,71 +149,10 @@ class Formcotizador extends Component {
           break;
 
 
-
-          
-        case "Ipiales Medellin Sur":
+          case "Ipiales Cali":
 
 
-          firebase.database().ref().child("viaje").child("Ipi-Med").on("value", (canal) => {
-  
-            if (canal.val() !== null) {
-    
-              this.setState({ ...this.state.viaje, viaje: canal.val() });
-      
-            } else {
-      
-              this.setState({ viaje: [] });
-      
-            }
-          });
-
-          break;
-
-
-        case "Bogotá Ipiales":
-
-      
-        firebase.database().ref().child("viaje").child("Bog-Ipi").on("value", (canal) => {
-
-          if (canal.val() !== null) {
-  
-            this.setState({ ...this.state.viaje, viaje: canal.val() });
-    
-          } else {
-    
-            this.setState({ viaje: [] });
-    
-          }
-        });
-
-        break;
-
-
-
-
-
-        case "Cali Ipiales":
-
-      
-          firebase.database().ref().child("viaje").child("Cal-Ipi").on("value", (canal) => {
-  
-            if (canal.val() !== null) {
-    
-              this.setState({ ...this.state.viaje, viaje: canal.val() });
-      
-            } else {
-      
-              this.setState({ viaje: [] });
-      
-            }
-          });
-
-          break;
-
-          case "Medellin Sur Ipiales":
-
-      
-            firebase.database().ref().child("viaje").child("Med-Ipi").on("value", (canal) => {
+            firebase.database().ref().child("viaje").child("Ipi-Cal").on("value", (canal) => {
     
               if (canal.val() !== null) {
       
@@ -293,128 +169,166 @@ class Formcotizador extends Component {
 
 
 
-    }
-
-   
-  };
+            
+          case "Ipiales Medellin Sur":
 
 
-  peticionGet = (origen,destino) => {
-
-    firebase.database().ref().child("canales").on("value", (canal) => {
-
-      if (canal.val() !== null) {
-
-        this.setState({ ...this.state.data, data: canal.val() });
-
-      } else {
-
-        this.setState({ data: [] });
-
-      }
-    });
-  };
-
-
-
-  setIp =async (ip_sincomas) =>{
-
-
-   await this.setState({ip: ip_sincomas });
-
-  }
-
-
-  setRuta =async (rutaResult) =>{
-
-    await this.setState({ ruta:rutaResult});
+            firebase.database().ref().child("viaje").child("Ipi-Med").on("value", (canal) => {
     
-  }
-
-  setValorPuesto =async (rutaResult) =>{
-
-    await this.setState({ valorPuesto:rutaResult});
-    
-  }
-
-  cargarPuestos = async (valorPuesto,puesto)=>{
-
-   
-
-
-
-    var totalPuestos = 0 
-    var origen = document.getElementById("origen").value
-    var destino = document.getElementById("destino").value
-    var ip = await publicIp.v4()
-
-    var cadenas = ip.split(".");
-    var ip_sincomas = "";
-    for(var i = 0; i < cadenas.length;i++){
-      ip_sincomas = ip_sincomas+cadenas[i];
-    }
-
-
-
-
-
-   this.setValorPuesto(valorPuesto)
-       
-   this.setIp(ip_sincomas)
+              if (canal.val() !== null) {
       
-    switch(origen+" "+destino){
+                this.setState({ ...this.state.viaje, viaje: canal.val() });
+        
+              } else {
+        
+                this.setState({ viaje: [] });
+        
+              }
+            });
+  
+            break;
 
 
-<<<<<<< HEAD
-=======
-     
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
+          case "Bogotá Ipiales":
 
- 
-
-      case "Ipiales Bogotá":
-
-        this.setState({ totalPuestos:0 });
-        this.setRuta("Ipi-Bog")
-
-        {Object.keys(this.state.puesto).map(i => {
-
-          document.getElementById(this.state.puesto[i].puesto).disabled=false;   
-      
-        })}
-
+        
+          firebase.database().ref().child("viaje").child("Bog-Ipi").on("value", (canal) => {
+  
+            if (canal.val() !== null) {
     
-
-
-        firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").remove(
-          error => {
-            if (error) console.log(error)
+              this.setState({ ...this.state.viaje, viaje: canal.val() });
+      
+            } else {
+      
+              this.setState({ viaje: [] });
+      
+            }
           });
 
+          break;
 
 
-<<<<<<< HEAD
-=======
+
+
+
+          case "Cali Ipiales":
+
+        
+            firebase.database().ref().child("viaje").child("Cal-Ipi").on("value", (canal) => {
+    
+              if (canal.val() !== null) {
+      
+                this.setState({ ...this.state.viaje, viaje: canal.val() });
+        
+              } else {
+        
+                this.setState({ viaje: [] });
+        
+              }
+            });
+  
+            break;
+
+            case "Medellin Sur Ipiales":
+
+        
+              firebase.database().ref().child("viaje").child("Med-Ipi").on("value", (canal) => {
+      
+                if (canal.val() !== null) {
+        
+                  this.setState({ ...this.state.viaje, viaje: canal.val() });
+          
+                } else {
+          
+                  this.setState({ viaje: [] });
+          
+                }
+              });
+    
+              break;
+
+
+
+      }
+
+     
+    };
+
+  
+    peticionGet = (origen,destino) => {
+
+      firebase.database().ref().child("canales").on("value", (canal) => {
+  
+        if (canal.val() !== null) {
+  
+          this.setState({ ...this.state.data, data: canal.val() });
+  
+        } else {
+  
+          this.setState({ data: [] });
+  
+        }
+      });
+    };
+
+
+
+    setIp =async (ip_sincomas) =>{
+
+
+     await this.setState({ip: ip_sincomas });
+
+    }
+
+
+    setRuta =async (rutaResult) =>{
+
+      await this.setState({ ruta:rutaResult});
+      
+    }
+
+    setValorPuesto =async (rutaResult) =>{
+
+      await this.setState({ valorPuesto:rutaResult});
+      
+    }
+
+    cargarPuestos = async (valorPuesto,puesto)=>{
+
+     
+
+
+
+      var totalPuestos = 0 
+      var origen = document.getElementById("origen").value
+      var destino = document.getElementById("destino").value
+      var ip = await publicIp.v4()
+
+      var cadenas = ip.split(".");
+      var ip_sincomas = "";
+      for(var i = 0; i < cadenas.length;i++){
+        ip_sincomas = ip_sincomas+cadenas[i];
+      }
+
+
+
+
+
+     this.setValorPuesto(valorPuesto)
+         
+     this.setIp(ip_sincomas)
+        
+      switch(origen+" "+destino){
+
+
 
    
 
         case "Ipiales Bogotá":
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
-          
-
-
-        break;
-
-
-        case "Ipiales Cali":
           this.setState({ totalPuestos:0 });
+          this.setRuta("Ipi-Bog")
 
-<<<<<<< HEAD
-          this.setRuta("Ipi-Cal")
-
-          {Object.keys(this.state.puesto).map(i => {
-=======
           {Object.keys(this.state.puesto).map(i => {
 
             document.getElementById(this.state.puesto[i].puesto).disabled=false;   
@@ -422,55 +336,27 @@ class Formcotizador extends Component {
           })}
   
       
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
-            document.getElementById(this.state.puesto[i].puesto).disabled=false;   
-        
-          })}
-  
 
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").remove(
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").remove(
             error => {
               if (error) console.log(error)
             });
 
 
-<<<<<<< HEAD
-=======
  
 
             
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
 
-
-
-         
           break;
 
-          
-        case "Ipiales Medellin Sur":
 
-        
-          this.setState({ totalPuestos:0 });
+          case "Ipiales Cali":
+            this.setState({ totalPuestos:0 });
 
-          this.setRuta("Ipi-Med")
+            this.setRuta("Ipi-Cal")
 
-<<<<<<< HEAD
-          {Object.keys(this.state.puesto).map(i => {
-
-            document.getElementById(this.state.puesto[i].puesto).disabled=false;   
-        
-          })}
-  
-
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").remove(
-            error => {
-              if (error) console.log(error)
-            });
-          
-          break;
-=======
             {Object.keys(this.state.puesto).map(i => {
 
               document.getElementById(this.state.puesto[i].puesto).disabled=false;   
@@ -490,18 +376,15 @@ class Formcotizador extends Component {
 
            
             break;
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
+            
+          case "Ipiales Medellin Sur":
 
-        case "Bogotá Ipiales":
+          
+            this.setState({ totalPuestos:0 });
 
-          this.setState({ totalPuestos:0 });
-        
-          this.setRuta("Bog-Ipi")
+            this.setRuta("Ipi-Med")
 
-<<<<<<< HEAD
-          {Object.keys(this.state.puesto).map(i => {
-=======
             {Object.keys(this.state.puesto).map(i => {
 
               document.getElementById(this.state.puesto[i].puesto).disabled=false;   
@@ -515,22 +398,14 @@ class Formcotizador extends Component {
               });
             
             break;
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
-            document.getElementById(this.state.puesto[i].puesto).disabled=false;   
-        
-          })}
-  
 
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").remove(
-            error => {
-              if (error) console.log(error)
-            });
+          case "Bogotá Ipiales":
 
-        break;
+            this.setState({ totalPuestos:0 });
+          
+            this.setRuta("Bog-Ipi")
 
-<<<<<<< HEAD
-=======
             {Object.keys(this.state.puesto).map(i => {
 
               document.getElementById(this.state.puesto[i].puesto).disabled=false;   
@@ -542,43 +417,19 @@ class Formcotizador extends Component {
               error => {
                 if (error) console.log(error)
               });
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
-
-
-
-
-        case "Cali Ipiales":
-
-          this.setState({ totalPuestos:0 });
-
-            
-          this.setRuta("Cal-Ipi")
-
-          {Object.keys(this.state.puesto).map(i => {
-
-            document.getElementById(this.state.puesto[i].puesto).disabled=false;   
-        
-          })}
-  
-          
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").remove(
-            error => {
-              if (error) console.log(error)
-            });
-
 
           break;
 
-          case "Medellin Sur Ipiales":
+
+
+
+
+          case "Cali Ipiales":
 
             this.setState({ totalPuestos:0 });
 
-<<<<<<< HEAD
-            this.setRuta("Med-Ipi")
-=======
               
             this.setRuta("Cal-Ipi")
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
             {Object.keys(this.state.puesto).map(i => {
 
@@ -586,31 +437,21 @@ class Formcotizador extends Component {
           
             })}
     
-<<<<<<< HEAD
-
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").remove(
-=======
             
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").remove(
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
               error => {
                 if (error) console.log(error)
               });
-  
+
+
             break;
 
+            case "Medellin Sur Ipiales":
 
-    }
+              this.setState({ totalPuestos:0 });
 
+              this.setRuta("Med-Ipi")
 
-
-  }
-
-
-  puesto = async (val) => {
-
-<<<<<<< HEAD
-=======
               {Object.keys(this.state.puesto).map(i => {
 
                 document.getElementById(this.state.puesto[i].puesto).disabled=false;   
@@ -622,95 +463,65 @@ class Formcotizador extends Component {
                 error => {
                   if (error) console.log(error)
                 });
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
     
-
-    document.getElementById(val).disabled=true;
-
+              break;
 
 
+      }
 
-    var valPuesto = this.state.valorPuesto
-    var totalPuestos = 0 
 
-    var origen = document.getElementById("origen").value
-    var destino = document.getElementById("destino").value
-    var ip = await publicIp.v4()
 
-    var cadenas = ip.split(".");
-    var ip_sincomas = "";
-    for(var i = 0; i < cadenas.length;i++){
-      ip_sincomas = ip_sincomas+cadenas[i];
     }
 
 
+    puesto = async (val) => {
 
-
-  
-    switch(origen+" "+destino){
-
-
-   
-
-      case "Ipiales Bogotá":
-
-        this.setState({ totalPuestos:0 });
-
-        firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val,val_puesto:valPuesto},
-        error => {
-          if (error) console.log(error)
-
-        });
-
-
-        firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
-
-          if (canal.val() !== null) {
-    
-  
-            this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-
-            {Object.keys(this.state.puesto).map(i => {
-              totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-          
-            })}
-    
-
-
-            this.setState({ totalPuestos: totalPuestos });
-
-
-
-    
-          } else {
-    
-            this.setState({ puesto: [] });
-    
-          }
-        });
       
+  
+      document.getElementById(val).disabled=true;
 
-        break;
 
 
-        case "Ipiales Cali":
+
+      var valPuesto = this.state.valorPuesto
+      var totalPuestos = 0 
+
+      var origen = document.getElementById("origen").value
+      var destino = document.getElementById("destino").value
+      var ip = await publicIp.v4()
+
+      var cadenas = ip.split(".");
+      var ip_sincomas = "";
+      for(var i = 0; i < cadenas.length;i++){
+        ip_sincomas = ip_sincomas+cadenas[i];
+      }
+
+
+
+
+    
+      switch(origen+" "+destino){
+
+
+     
+
+        case "Ipiales Bogotá":
 
           this.setState({ totalPuestos:0 });
 
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val,val_puesto:valPuesto},
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val,val_puesto:valPuesto},
           error => {
             if (error) console.log(error)
+
           });
 
 
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").on("value", (canal) => {
-
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
+  
             if (canal.val() !== null) {
       
     
               this.setState({ ...this.state.puesto, puesto: canal.val() });
-
 
 
               {Object.keys(this.state.puesto).map(i => {
@@ -722,43 +533,7 @@ class Formcotizador extends Component {
 
               this.setState({ totalPuestos: totalPuestos });
 
-      
-            } else {
-      
-              this.setState({ puesto: [] });
-      
-            }
-          });
 
-         
-          break;
-
-          
-        case "Ipiales Medellin Sur":
-
-          this.setState({ totalPuestos:0 });
-            
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").push({id_pre_compra:"Ipi-Med",puesto:val,val_puesto:valPuesto},
-          error => {
-            if (error) console.log(error)
-          });
-         
-          
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").on("value", (canal) => {
-
-            if (canal.val() !== null) {
-      
-    
-              this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-              {Object.keys(this.state.puesto).map(i => {
-                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-            
-              })}
-      
-
-
-              this.setState({ totalPuestos: totalPuestos });
 
       
             } else {
@@ -766,99 +541,378 @@ class Formcotizador extends Component {
               this.setState({ puesto: [] });
       
             }
-          });
-
-          break;
-
-
-        case "Bogotá Ipiales":
-
-          this.setState({ totalPuestos:0 });
-
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").push({id_pre_compra:"Bog-Ipi",puesto:val,val_puesto:valPuesto},
-          error => {
-            if (error) console.log(error)
           });
         
 
-
-
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").on("value", (canal) => {
-
-            if (canal.val() !== null) {
-      
-    
-              this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-              {Object.keys(this.state.puesto).map(i => {
-                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-            
-              })}
-      
-
-
-              this.setState({ totalPuestos: totalPuestos });
-      
-            } else {
-      
-              this.setState({ puesto: [] });
-      
-            }
-          });
-
-
-        break;
-
-
-
-
-
-        case "Cali Ipiales":
-          this.setState({ totalPuestos:0 });
-
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").push({id_pre_compra:"Cal-Ipi",puesto:val,val_puesto:valPuesto},
-          error => {
-            if (error) console.log(error)
-          });
-          
-          
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").on("value", (canal) => {
-
-            if (canal.val() !== null) {
-      
-    
-              this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-              {Object.keys(this.state.puesto).map(i => {
-                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-            
-              })}
-      
-
-              this.setState({ totalPuestos: totalPuestos });
-      
-            } else {
-      
-              this.setState({ puesto: [] });
-      
-            }
-          });
-
-
           break;
 
-          case "Medellin Sur Ipiales":
+
+          case "Ipiales Cali":
 
             this.setState({ totalPuestos:0 });
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").push({id_pre_compra:"Med-Ipi",puesto:val,val_puesto:valPuesto},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val,val_puesto:valPuesto},
+            error => {
+              if (error) console.log(error)
+            });
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+ 
+
+                this.setState({ totalPuestos: totalPuestos });
+
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+           
+            break;
+
+            
+          case "Ipiales Medellin Sur":
+
+            this.setState({ totalPuestos:0 });
+              
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").push({id_pre_compra:"Ipi-Med",puesto:val,val_puesto:valPuesto},
             error => {
               if (error) console.log(error)
             });
            
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").on("value", (canal) => {
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+  
 
+                this.setState({ totalPuestos: totalPuestos });
+
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+  
+            break;
+
+
+          case "Bogotá Ipiales":
+
+            this.setState({ totalPuestos:0 });
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").push({id_pre_compra:"Bog-Ipi",puesto:val,val_puesto:valPuesto},
+            error => {
+              if (error) console.log(error)
+            });
+          
+
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+  
+ 
+                this.setState({ totalPuestos: totalPuestos });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+
+          break;
+
+
+
+
+
+          case "Cali Ipiales":
+            this.setState({ totalPuestos:0 });
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").push({id_pre_compra:"Cal-Ipi",puesto:val,val_puesto:valPuesto},
+            error => {
+              if (error) console.log(error)
+            });
+            
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+
+                this.setState({ totalPuestos: totalPuestos });
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+
+            break;
+
+            case "Medellin Sur Ipiales":
+
+              this.setState({ totalPuestos:0 });
+
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").push({id_pre_compra:"Med-Ipi",puesto:val,val_puesto:valPuesto},
+              error => {
+                if (error) console.log(error)
+              });
+             
+
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").on("value", (canal) => {
+  
+                if (canal.val() !== null) {
+          
+        
+                  this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                  {Object.keys(this.state.puesto).map(i => {
+                    totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+                
+                  })}
+          
+    
+
+                  this.setState({ totalPuestos: totalPuestos });
+          
+                } else {
+          
+                  this.setState({ puesto: [] });
+          
+                }
+              });
+    
+              break;
+
+
+      }
+
+      
+
+    };
+
+  
+    peticionPost = () => {
+  
+      firebase.database().ref().child("canales").push(this.state.form,
+        error => {
+          if (error) console.log(error)
+        });
+      this.setState({ modalInsertar: false });
+  
+    }
+  
+    peticionPut = () => {
+  
+      firebase.database().ref().child(`canales/${this.state.id}`).set(
+        this.state.form,
+        error => {
+          if (error) console.log(error)
+        });
+      this.setState({ modalEditar: false });
+  
+    }
+  
+    peticionDelete  =async  () => {
+  
+    
+     
+
+        
+      document.getElementById(this.state.prereserva.puesto).disabled=false;
+
+
+      var valPuesto = this.state.valorPuesto
+      var totalPuestos = 0 
+
+      var origen = document.getElementById("origen").value
+      var destino = document.getElementById("destino").value
+      var ip = await publicIp.v4()
+
+      var cadenas = ip.split(".");
+      var ip_sincomas = "";
+      for(var i = 0; i < cadenas.length;i++){
+        ip_sincomas = ip_sincomas+cadenas[i];
+      }
+
+
+     // if (window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.prereserva && this.state.prereserva.puesto}?`)) {
+        firebase.database().ref().child(`pre_compra/${this.state.ip}/${this.state.ruta}/${this.state.id}`).remove(
+          error => {
+            if (error) console.log(error)
+          });
+    //  }
+
+
+
+    
+      switch(origen+" "+destino){
+
+
+     
+
+        case "Ipiales Bogotá":
+
+          this.setState({ totalPuestos:0 });
+
+      
+
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
+  
+            if (canal.val() !== null) {
+      
+    
+              this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+
+              {Object.keys(this.state.puesto).map(i => {
+                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+            
+              })}
+      
+
+
+              this.setState({ totalPuestos: totalPuestos });
+
+
+
+      
+            } else {
+      
+              this.setState({ puesto: [] });
+      
+            }
+          });
+        
+
+          break;
+
+
+          case "Ipiales Cali":
+
+            this.setState({ totalPuestos:0 });
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+ 
+
+                this.setState({ totalPuestos: totalPuestos });
+
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+
+           
+            break;
+
+            
+          case "Ipiales Medellin Sur":
+
+            this.setState({ totalPuestos:0 });
+                       
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+        
+      
+                this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                {Object.keys(this.state.puesto).map(i => {
+                  totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+              
+                })}
+        
+  
+
+                this.setState({ totalPuestos: totalPuestos });
+
+        
+              } else {
+        
+                this.setState({ puesto: [] });
+        
+              }
+            });
+  
+            break;
+
+
+          case "Bogotá Ipiales":
+
+            this.setState({ totalPuestos:0 });
+
+
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").on("value", (canal) => {
+  
               if (canal.val() !== null) {
         
       
@@ -879,252 +933,20 @@ class Formcotizador extends Component {
         
               }
             });
-  
-            break;
 
-
-    }
-
-    
-
-  };
-
-
-  peticionPost = () => {
-
-    firebase.database().ref().child("canales").push(this.state.form,
-      error => {
-        if (error) console.log(error)
-      });
-    this.setState({ modalInsertar: false });
-
-  }
-
-  peticionPut = () => {
-
-    firebase.database().ref().child(`canales/${this.state.id}`).set(
-      this.state.form,
-      error => {
-        if (error) console.log(error)
-      });
-    this.setState({ modalEditar: false });
-
-  }
-
-  peticionDelete  =async  () => {
-
-  
-   
-
-      
-    document.getElementById(this.state.prereserva.puesto).disabled=false;
-
-
-    var valPuesto = this.state.valorPuesto
-    var totalPuestos = 0 
-
-    var origen = document.getElementById("origen").value
-    var destino = document.getElementById("destino").value
-    var ip = await publicIp.v4()
-
-    var cadenas = ip.split(".");
-    var ip_sincomas = "";
-    for(var i = 0; i < cadenas.length;i++){
-      ip_sincomas = ip_sincomas+cadenas[i];
-    }
-
-
-   // if (window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.prereserva && this.state.prereserva.puesto}?`)) {
-      firebase.database().ref().child(`pre_compra/${this.state.ip}/${this.state.ruta}/${this.state.id}`).remove(
-        error => {
-          if (error) console.log(error)
-        });
-  //  }
-
-
-
-  
-    switch(origen+" "+destino){
-
-
-   
-
-      case "Ipiales Bogotá":
-
-        this.setState({ totalPuestos:0 });
-
-    
-
-        firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").on("value", (canal) => {
-
-          if (canal.val() !== null) {
-    
-  
-            this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-
-            {Object.keys(this.state.puesto).map(i => {
-              totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-          
-            })}
-    
-
-
-            this.setState({ totalPuestos: totalPuestos });
-
-
-
-    
-          } else {
-    
-            this.setState({ puesto: [] });
-    
-          }
-        });
-      
-
-        break;
-
-
-        case "Ipiales Cali":
-
-          this.setState({ totalPuestos:0 });
-
-
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").on("value", (canal) => {
-
-            if (canal.val() !== null) {
-      
-    
-              this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-
-
-              {Object.keys(this.state.puesto).map(i => {
-                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-            
-              })}
-      
-
-
-              this.setState({ totalPuestos: totalPuestos });
-
-      
-            } else {
-      
-              this.setState({ puesto: [] });
-      
-            }
-          });
-
-         
-          break;
-
-          
-        case "Ipiales Medellin Sur":
-
-          this.setState({ totalPuestos:0 });
-                     
-          
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").on("value", (canal) => {
-
-            if (canal.val() !== null) {
-      
-    
-              this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-              {Object.keys(this.state.puesto).map(i => {
-                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-            
-              })}
-      
-
-
-              this.setState({ totalPuestos: totalPuestos });
-
-      
-            } else {
-      
-              this.setState({ puesto: [] });
-      
-            }
-          });
 
           break;
 
 
-        case "Bogotá Ipiales":
-
-          this.setState({ totalPuestos:0 });
-
-
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").on("value", (canal) => {
-
-            if (canal.val() !== null) {
-      
-    
-              this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-              {Object.keys(this.state.puesto).map(i => {
-                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-            
-              })}
-      
-
-
-              this.setState({ totalPuestos: totalPuestos });
-      
-            } else {
-      
-              this.setState({ puesto: [] });
-      
-            }
-          });
-
-
-        break;
 
 
 
-
-
-        case "Cali Ipiales":
-          this.setState({ totalPuestos:0 });
-          
-          
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").on("value", (canal) => {
-
-            if (canal.val() !== null) {
-      
-    
-              this.setState({ ...this.state.puesto, puesto: canal.val() });
-
-              {Object.keys(this.state.puesto).map(i => {
-                totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
-            
-              })}
-      
-
-              console.log(totalPuestos);
-              this.setState({ totalPuestos: totalPuestos });
-      
-            } else {
-      
-              this.setState({ puesto: [] });
-      
-            }
-          });
-
-
-          break;
-
-          case "Medellin Sur Ipiales":
-
+          case "Cali Ipiales":
             this.setState({ totalPuestos:0 });
-
-
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").on("value", (canal) => {
-
+            
+            
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").on("value", (canal) => {
+  
               if (canal.val() !== null) {
         
       
@@ -1145,202 +967,166 @@ class Formcotizador extends Component {
         
               }
             });
-  
+
+
             break;
 
-          }
+            case "Medellin Sur Ipiales":
+
+              this.setState({ totalPuestos:0 });
 
 
-  };
-
-  handleChange = e => {
-
-    this.setState({
-      form: {
-        ...this.state.form,
-        [e.target.name]: e.target.value
-      }
-    })
-    console.log(this.state.form);
-
-  }
-
-
-  seleccionarCanal = async (canal, id, caso) => {
-
-    await this.setState({ form: canal, id: id });
-
-    (caso === "Editar") ? this.setState({ modalEditar: true }) :
-      this.peticionDelete()
-
-  }
-
-
-  seleccionarPuesto = async (canal, id, caso) => {
-
-
-    await this.setState({ prereserva: canal, id: id });
-
-
-
-    (caso === "Editar") ? this.setState({ modalEditar: true }) :
-      this.peticionDelete()
-
-      
-
-  }
-
-
-  buscar = async () => {
-
-         
-
-
-    var origen = document.getElementById("origen").value;
-    var destino  = document.getElementById("destino").value;
-    var fecha = document.getElementById("fecha").value; 
-
-
-
-
-
-
-   if(origen!="Seleccione su origen"){
-
-      if(destino != "Seleccione su destino"){
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").on("value", (canal) => {
+  
+                if (canal.val() !== null) {
+          
         
+                  this.setState({ ...this.state.puesto, puesto: canal.val() });
+
+                  {Object.keys(this.state.puesto).map(i => {
+                    totalPuestos = this.state.puesto[i].val_puesto + totalPuestos
+                
+                  })}
+          
+    
+                  console.log(totalPuestos);
+                  this.setState({ totalPuestos: totalPuestos });
+          
+                } else {
+          
+                  this.setState({ puesto: [] });
+          
+                }
+              });
+    
+              break;
+
+            }
+
+  
+    };
+  
+    handleChange = e => {
+  
+      this.setState({
+        form: {
+          ...this.state.form,
+          [e.target.name]: e.target.value
+        }
+      })
+      console.log(this.state.form);
+  
+    }
+  
+
+    seleccionarCanal = async (canal, id, caso) => {
+  
+      await this.setState({ form: canal, id: id });
+  
+      (caso === "Editar") ? this.setState({ modalEditar: true }) :
+        this.peticionDelete()
+  
+    }
 
 
-      if(fecha){
+    seleccionarPuesto = async (canal, id, caso) => {
+ 
+  
+      await this.setState({ prereserva: canal, id: id });
 
+
+  
+      (caso === "Editar") ? this.setState({ modalEditar: true }) :
+        this.peticionDelete()
+
+        
+  
+    }
+
+
+    buscar = async () => {
+
+           
+
+
+      var origen = document.getElementById("origen").value;
+      var destino  = document.getElementById("destino").value;
+      var fecha = document.getElementById("fecha").value; 
+
+
+
+
+
+
+     if(origen!="Seleccione su origen"){
+
+        if(destino != "Seleccione su destino"){
           
 
+
+        if(fecha){
+
+            
+
+          
+          let div = document.querySelector('#contenedor');
+          div.style.visibility = 'visible';
+
+            this.setState({ ...this.state.fecha, fecha: fecha });
+
+            this.peticionViaje(origen,destino);
+
+
+
+  
+
+
+        }else{
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Debe escoger una fecha de viaje',
         
-        let div = document.querySelector('#contenedor');
-        div.style.visibility = 'visible';
-
-          this.setState({ ...this.state.fecha, fecha: fecha });
-
-          this.peticionViaje(origen,destino);
+          })
+        }
+       
 
 
 
-
-
-
-      }else{
+       }else{
 
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Debe escoger una fecha de viaje',
+          text: 'Debe escoger su destino',
       
         })
-      }
-     
+       }
 
 
 
      }else{
 
+
+
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Debe escoger su destino',
+        text: 'Debe escoger su origen',
     
       })
+
+
      }
 
+     
 
-
-   }else{
-
-
-
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Debe escoger su origen',
   
-    })
+
+    }
 
 
-   }
-
-   
-
-
-
-  }
-
-
-
-
-  continuar = async () => {
-
-
-
-      firebase.database().ref().child("compra").child("Ipi_Bog").push(this.state.puesto,
-      error => {
-        if (error) console.log(error)
-      });
-
-  }
-
-
-
-  peticionGetRutas = () => {
-
-
-
-    let date = new Date()
-
-    let day = date.getDate()
-    let month = date.getMonth() + 1
-    let year = date.getFullYear()
-    
-
-
-    firebase.database().ref().child("origen").on("value", (canal) => {
-
-      if (canal.val() !== null) {
-
-
-        this.setState({ ...this.state.origen, origen: canal.val() });
-
-      } else {
-
-        this.setState({ origen: [] });
-
-      }
-    });
-
-
-
-    firebase.database().ref().child("rutas").on("value", (canal) => {
-
-      if (canal.val() !== null) {
-
-
-        this.setState({ ...this.state.rutas, rutas: canal.val() });
-
-      } else {
-
-        this.setState({ rutas: [] });
-
-      }
-    });
-
-  };
-
-
-
-  destino = async () => {
-
-
-<<<<<<< HEAD
-    var origen =  document.getElementById("origen").value
-=======
 
 
     continuar = async () => {
@@ -1357,127 +1143,77 @@ class Formcotizador extends Component {
 
 
     peticionGetRutas = () => {
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
 
 
-    this.setState({ destinoform: origen });
+      let date = new Date()
 
-<<<<<<< HEAD
-
-  }
-
-
-  componentDidMount() {
-=======
       let day = date.getDate()
       let month = date.getMonth() + 1
       let year = date.getFullYear()
       
  
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
-
+      firebase.database().ref().child("origen").on("value", (canal) => {
   
-    let div = document.querySelector('#contenedor');
-    div.style.visibility = 'hidden';
-
-    this.peticionGetRutas();
-    this.peticionGetFlotas();
-
-
+        if (canal.val() !== null) {
   
-  }
 
-  peticionCompra = () => {
-
-    var nombre = document.getElementById("nombreTitular").value
-    var apellido = document.getElementById("apellidoTitular").value
-    var tipodocumento = document.getElementById("tipoDocumento").value
-    var numerodocumento = document.getElementById("numeroDocumento").value
-    var fechanacimiento = document.getElementById("fechaNacimiento").value
-
-
-
-
-    if(nombre||apellido||numerodocumento||fechanacimiento){
-
-      if(tipodocumento!="Seleccione Documento"){
-
-          //pasareala de pagos 
-
-
+          this.setState({ ...this.state.origen, origen: canal.val() });
   
-        
-        /*
-      
-          var html = '<form>'+
-          '<script'+
-            'src=https://checkout.epayco.co/checkout.js'+
-            'class="epayco-button"'+
-            'data-epayco-key="491d6a0b6e992cf924edd8d3d088aff1"'+
-            'data-epayco-amount="50000"'+
-            'data-epayco-name="Vestido Mujer Primavera"'+
-            'data-epayco-description="Vestido Mujer Primavera"'+
-            'data-epayco-currency="cop"'+
-            'data-epayco-country="co"'+
-            'data-epayco-test="true"'+
-            'data-epayco-external="false"'+
-            'data-epayco-response="https://ejemplo.com/respuesta.html"'+
-            'data-epayco-confirmation="https://ejemplo.com/confirmacion">'+
-        '</script>'+
-        '</form>';*/
-
-
-    /*    var handler = ePayco.checkout.configure({
-        key: '45b960805ced5c27ce34b1600b4b9f54',
-        test: true
-      })*/
-
-
-      var epayco = require('epayco-sdk-node')({
-        apiKey: '65caa5c799b54e82634b6daa4d39161d',
-        privateKey: 'ea7949bd5ba30ad38441faefe3637c19',
-        lang: 'ES',
-        test: true
-    })
-
-
- 
-
-      }else{
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Debe seleccionar tipo documento',
-      
-        })
-      }
-
-
-
-    }else{
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Debe complementar la información',
-    
-      })
-    }
-<<<<<<< HEAD
-
-    
-/*
-
-    firebase.database().ref().child("compra").push(this.state.form,
-      error => {
-        if (error) console.log(error)
+        } else {
+  
+          this.setState({ origen: [] });
+  
+        }
       });
-    this.setState({ modalInsertar: false });
-*/
-  }
-=======
+
+
+  
+      firebase.database().ref().child("rutas").on("value", (canal) => {
+  
+        if (canal.val() !== null) {
+  
+
+          this.setState({ ...this.state.rutas, rutas: canal.val() });
+  
+        } else {
+  
+          this.setState({ rutas: [] });
+  
+        }
+      });
+  
+    };
+
+
+
+    destino = async () => {
+
+
+      var origen =  document.getElementById("origen").value
+
+
+
+      this.setState({ destinoform: origen });
+
+
+    }
+  
+  
+    componentDidMount() {
+
+
+    
+      let div = document.querySelector('#contenedor');
+      div.style.visibility = 'hidden';
+  
+      this.peticionGetRutas();
+      this.peticionGetFlotas();
+
+
+    
+    }
   
     peticionCompra = () => {
 
@@ -1515,7 +1251,6 @@ class Formcotizador extends Component {
               'data-epayco-external="false"'+
               'data-epayco-response="https://ejemplo.com/respuesta.html"'+
               'data-epayco-confirmation="https://ejemplo.com/confirmacion">'+
-
           '</script>'+
           '</form>';*/
 
@@ -1568,11 +1303,12 @@ class Formcotizador extends Component {
   */
     }
  
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
 
+  
     render() {
     //  let idUsuarios = this.props.cat
       return (
+        
       <div className="container">
         <div className="row">
 
@@ -1635,8 +1371,7 @@ class Formcotizador extends Component {
                                   </>
                                         );
                                 break;
-                   
-                              }
+                    }
 
                   })}
                 </select>
@@ -1694,32 +1429,6 @@ class Formcotizador extends Component {
                   <li className="list-group-item col-md-2 col-sm-2  text-center ">OPCIONES<hr/></li>
                 </ul>
                 </div>
-<<<<<<< HEAD
-=======
-                
-                <div className="col-md-2 col-sm-2 text-center "> 
-
-              	{
-                
-                
-                  "$"+ this.state.viaje[i].valor 
-
-                
-                
-                }
-
-                {<br></br>}
-
-                <p>
-                  <button className="btn btn-primary" type="button" data-bs-toggle="collapse" 
-                  data-bs-target={"#c"+this.state.viaje[i].nodo } aria-expanded="false" aria-controls="collapseExample"  onClick={() => this.cargarPuestos(this.state.viaje[i].valor)}  >
-                    Selecionar Silla
-                  </button>
-                  {"   "}
-                </p>           
-                
-                
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
               </div>
 
 
@@ -1760,9 +1469,10 @@ class Formcotizador extends Component {
                         <div className="col-md-2 col-sm-12 text-center">
                             <h4>{ "$"+ this.state.viaje[i].valor}</h4>
                             <button className="btn consultar" type="button" data-bs-toggle="collapse"
-                            data-bs-target={"#c"+this.state.viaje[i].nodo} aria-expanded="false" aria-controls={"c"+this.state.viaje[i].nodo}  onClick={() => this.cargarPuestos()}  >
+                            data-bs-target={"#c"+this.state.viaje[i].nodo} aria-expanded="false" aria-controls={"c"+this.state.viaje[i].nodo}   onClick={() => this.cargarPuestos(this.state.viaje[i].valor)}  >
                               Selecionar Silla
                             </button>
+
                         </div>
 
                       </div>
@@ -1773,7 +1483,6 @@ class Formcotizador extends Component {
 
                           <div className="row">
 
-<<<<<<< HEAD
                             {/* <div class="card text-white"> */}
                               {/* <img src={bus} className="card-img" alt="..."/> */}
                               <div className=" col-md-9 ">
@@ -1841,7 +1550,7 @@ class Formcotizador extends Component {
                                     <button id={"p19"+this.state.viaje[i].nodo} onClick={() => this.puesto("p19"+this.state.viaje[i].nodo)} className="btn btn-group">
                                       <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                     </button>
-                                    <button id={"p20"+this.state.viaje[i].nodo} onClick={() => this.puesto("p21"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <button id={"p20"+this.state.viaje[i].nodo} onClick={() => this.puesto("p20"+this.state.viaje[i].nodo)} className="btn btn-group">
                                       <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                     </button>
 
@@ -1952,26 +1661,6 @@ class Formcotizador extends Component {
 
                           </div>
 
-=======
-
-                                   </div>
-
-
-                                   </div>
-
-                        
-
-                                  })}
-
-
-                                    <div className="col-md-2 col-sm-2">
-                                     <input type="text" className="btn btn-danger" value={"$"+this.state.totalPuestos} />
-                                   </div>  
-
-                                   <div className="col-md-2 col-sm-2">
-                                     <input type="text" className="btn btn-danger" value="Continuar"  onClick={()=>this.setState({modalInsertar: true})}/>
-                                   </div> 
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
                         </div>
                       </div>
 
@@ -1985,63 +1674,37 @@ class Formcotizador extends Component {
 
             {/* </div>     */}
           </div>
-<<<<<<< HEAD
         </div>
         </div>
-      </div>
-=======
+
+
+        <Modal isOpen={this.state.modalInsertar}>
   
-  
-  
-  
-            <Modal isOpen={this.state.modalInsertar}>
-  
-              <ModalHeader>Titular Reserva</ModalHeader>
+              <ModalHeader>Insertar Registro</ModalHeader>
               <ModalBody>
   
                 <div className="form-group">
-                  <label>Nomre Titular: </label>
+                  <label>Canal: </label>
                   <br />
-                  <input id="nombreTitular"  type="text" className="form-control" name="nombreTitular" onChange={this.handleChange} />
+                  <input type="text" className="form-control" name="canal" onChange={this.handleChange} />
                   <br />
-                  <label>Apellido Titular: </label>
+                  <label>País: </label>
                   <br />
-                  <input id="apellidoTitular" type="text" className="form-control" name="apellidoTitular" onChange={this.handleChange} />
+                  <input type="text" className="form-control" name="pais" onChange={this.handleChange} />
                   <br />
-                  <label>Tipo Documento: </label>
+                  <label>Idioma: </label>
                   <br />
-
-                  <select id="tipoDocumento" className="form-control" name="tipoDocumento" onChange={this.handleChange}  >
-                      <option selected disabled value="Seleccione Documento">Seleccione Documento</option>
-                      <option value="C.c">C.c</option>
-                      <option value="T.i">T.i</option>
-                      <option value="PEP">PEP</option>
-           
-                  </select>
-
-
+                  <input type="text" className="form-control" name="idioma" onChange={this.handleChange} />
                   <br />
-                  <label>Numero Docuemnto </label>
+                  <label>Cantidad de Suscriptores (millones): </label>
                   <br />
-                  <input id="numeroDocumento" type="text" className="form-control" name="numeroDocumento" onChange={this.handleChange} />
-
-                  <br />
-                  <label>Fecha Nacimiento </label>
-                  <br />
-                  <input id="fechaNacimiento" type="date" className="form-control" name="fechaNacimiento" onChange={this.handleChange} />
-
-                  <div id="pasarela"></div>
-
-
+                  <input type="text" className="form-control" name="suscriptores" onChange={this.handleChange} />
                 </div>
-
-
-
-      
+  
               </ModalBody>
               <ModalFooter>
   
-                <button className="btn btn-primary" onClick={() => this.peticionCompra()}>Reservar</button>{"   "}
+                <button className="btn btn-primary" onClick={() => this.peticionPost()}>Insertar</button>{"   "}
                 <button className="btn btn-danger" onClick={() => this.setState({ modalInsertar: false })}>Cancelar</button>
   
               </ModalFooter>
@@ -2076,16 +1739,20 @@ class Formcotizador extends Component {
                 <button className="btn btn-danger" onClick={() => this.setState({ modalEditar: false })}>Cancelar</button>
               </ModalFooter>
             </Modal>
-            
-          </>
->>>>>>> c9d791802aa9205a9e5591febd5d25b1753b6221
+      </div>
+      
+
+
+
+
+        
       );
     }
   }
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
   export default Formcotizador;
