@@ -50,6 +50,7 @@ class Formcotizador extends Component {
       puesto:'',
       usuarios:'',
       totalPuestos:'0',
+      totalPuestosComa:'0',
       valorPuesto:'',
       contador:0,
 
@@ -533,12 +534,14 @@ class Formcotizador extends Component {
 
               this.setState({ totalPuestos: totalPuestos });
 
+              this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos) });
 
 
       
             } else {
       
               this.setState({ puesto: [] });
+              this.setState({ totalPuestosComa: "0" });
       
             }
           });
@@ -576,11 +579,16 @@ class Formcotizador extends Component {
                 this.setState({ totalPuestos: totalPuestos });
 
         
-              } else {
-        
-                this.setState({ puesto: [] });
-        
-              }
+                this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos) });
+
+
+      
+            } else {
+      
+              this.setState({ puesto: [] });
+              this.setState({ totalPuestosComa: "0" });
+      
+            }
             });
 
            
@@ -613,10 +621,14 @@ class Formcotizador extends Component {
 
                 this.setState({ totalPuestos: totalPuestos });
 
-        
+                this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos) });
+
+
+      
               } else {
         
                 this.setState({ puesto: [] });
+                this.setState({ totalPuestosComa: "0" });
         
               }
             });
@@ -652,9 +664,14 @@ class Formcotizador extends Component {
  
                 this.setState({ totalPuestos: totalPuestos });
         
+                this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos) });
+
+
+      
               } else {
         
                 this.setState({ puesto: [] });
+                this.setState({ totalPuestosComa: "0" });
         
               }
             });
@@ -690,11 +707,16 @@ class Formcotizador extends Component {
 
                 this.setState({ totalPuestos: totalPuestos });
         
-              } else {
-        
-                this.setState({ puesto: [] });
-        
-              }
+                this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos) });
+
+
+      
+            } else {
+      
+              this.setState({ puesto: [] });
+              this.setState({ totalPuestosComa: "0" });
+      
+            }
             });
 
 
@@ -726,9 +748,14 @@ class Formcotizador extends Component {
 
                   this.setState({ totalPuestos: totalPuestos });
           
+                  this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos) });
+
+
+      
                 } else {
           
                   this.setState({ puesto: [] });
+                  this.setState({ totalPuestosComa: "0" });
           
                 }
               });
@@ -824,13 +851,14 @@ class Formcotizador extends Component {
 
 
               this.setState({ totalPuestos: totalPuestos });
-
+              this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos)});
 
 
       
             } else {
       
               this.setState({ puesto: [] });
+              this.setState({ totalPuestosComa: "0" });
       
             }
           });
@@ -863,9 +891,14 @@ class Formcotizador extends Component {
                 this.setState({ totalPuestos: totalPuestos });
 
         
+                this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos)});
+
+
+      
               } else {
         
                 this.setState({ puesto: [] });
+                this.setState({ totalPuestosComa: "0" });
         
               }
             });
@@ -896,9 +929,14 @@ class Formcotizador extends Component {
                 this.setState({ totalPuestos: totalPuestos });
 
         
+                this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos)});
+
+
+      
               } else {
         
                 this.setState({ puesto: [] });
+                this.setState({ totalPuestosComa: "0" });
         
               }
             });
@@ -927,9 +965,14 @@ class Formcotizador extends Component {
 
                 this.setState({ totalPuestos: totalPuestos });
         
+                this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos)});
+
+
+      
               } else {
         
                 this.setState({ puesto: [] });
+                this.setState({ totalPuestosComa: "0" });
         
               }
             });
@@ -958,14 +1001,19 @@ class Formcotizador extends Component {
                 })}
         
   
-                console.log(totalPuestos);
+
                 this.setState({ totalPuestos: totalPuestos });
         
-              } else {
-        
-                this.setState({ puesto: [] });
-        
-              }
+                this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos)});
+
+
+      
+            } else {
+      
+              this.setState({ puesto: [] });
+              this.setState({ totalPuestosComa: "0" });
+      
+            }
             });
 
 
@@ -989,12 +1037,17 @@ class Formcotizador extends Component {
                   })}
           
     
-                  console.log(totalPuestos);
+       
                   this.setState({ totalPuestos: totalPuestos });
           
+                  this.setState({ totalPuestosComa: new Intl.NumberFormat().format(totalPuestos)});
+
+
+      
                 } else {
           
                   this.setState({ puesto: [] });
+                  this.setState({ totalPuestosComa: "0" });
           
                 }
               });
@@ -1304,6 +1357,25 @@ class Formcotizador extends Component {
     }
  
 
+    continuar = async () => {
+
+       if(this.state.totalPuestosComa!=0){
+
+          this.setState({modalInsertar: true })
+
+
+       }else{
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Debe escoger una puesto de viaje',
+      
+        })
+
+       }
+    }
+ 
   
     render() {
     //  let idUsuarios = this.props.cat
@@ -1467,7 +1539,7 @@ class Formcotizador extends Component {
                         </div>
 
                         <div className="col-md-2 col-sm-12 text-center">
-                            <h4>{ "$"+ this.state.viaje[i].valor}</h4>
+                            <h4>{ "$"+  new Intl.NumberFormat().format( this.state.viaje[i].valor)}</h4>
                             <button className="btn consultar" type="button" data-bs-toggle="collapse"
                             data-bs-target={"#c"+this.state.viaje[i].nodo} aria-expanded="false" aria-controls={"c"+this.state.viaje[i].nodo}   onClick={() => this.cargarPuestos(this.state.viaje[i].valor)}  >
                               Selecionar Silla
@@ -1651,11 +1723,16 @@ class Formcotizador extends Component {
                                
                                 <tfoot>
                                   <td>Total</td>
-                                  <td>{"$"+this.state.totalPuestos}</td>
+                                  <td>{"$"+this.state.totalPuestosComa}</td>
                     
                                 </tfoot>
                               </table>
                               
+                              <div>
+                                      <button className="btn btn-danger" onClick={()=>this.continuar()}>Continuar</button>
+                                    </div>
+                                  
+
                             </div>
                             
 
@@ -1670,12 +1747,16 @@ class Formcotizador extends Component {
                 </div>
                 {/* // <div className="card listahorario my-2"> */}
 
-              
-
             {/* </div>     */}
           </div>
         </div>
         </div>
+
+
+
+
+
+
 
 
         <Modal isOpen={this.state.modalInsertar}>
@@ -1713,6 +1794,8 @@ class Formcotizador extends Component {
   
   
   
+
+
             <Modal isOpen={this.state.modalEditar}>
               <ModalHeader>Editar Registro</ModalHeader>
               <ModalBody>
@@ -1739,20 +1822,11 @@ class Formcotizador extends Component {
                 <button className="btn btn-danger" onClick={() => this.setState({ modalEditar: false })}>Cancelar</button>
               </ModalFooter>
             </Modal>
-      </div>
+          </div>
       
-
-
-
-
-        
       );
     }
   }
-  
-  
-  
-  
   
   
   export default Formcotizador;
