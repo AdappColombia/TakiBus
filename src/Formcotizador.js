@@ -24,6 +24,7 @@ import wc from './imagenes/wc.png';
 import origen from './imagenes/origen.png';
 import destino from './imagenes/destino.png';
 import fecha from './imagenes/fecha.png';
+import ScriptTag from 'react-script-tag';
 
 
 
@@ -32,7 +33,6 @@ import fecha from './imagenes/fecha.png';
 import './Formcotizador.css'
 
 class Formcotizador extends Component {
-
 
     state = {
       data: [],
@@ -54,10 +54,10 @@ class Formcotizador extends Component {
       valorPuesto:'',
       contador:0,
 
-
       bandera: '0',
       modalInsertar: false,
       modalEditar: false,
+      estadoCheck: false,
 
       compra:{
          id_compra:'',
@@ -70,20 +70,18 @@ class Formcotizador extends Component {
       },
 
 
-
-
-
       prereserva: {
         puesto: '',
       
       },
 
       form: {
-        nombreTitular: '',
-        apellidoTitular: '',
+        nombres: '',
+        apellidos: '',
         tipoDocumento: '',
         numeroDocumento: '',
-        fechaNacimiento: ''
+        numeroContacto: '',
+        correo: ''
       },
   
       id: 0
@@ -1070,6 +1068,24 @@ class Formcotizador extends Component {
       console.log(this.state.form);
   
     }
+
+
+
+    handleChangec({target}){
+  
+      if (target.checked){
+        target.removeAttribute('checked');
+        target.parentNode.style.textDecoration = "";
+ 
+
+     } else {
+        target.setAttribute('checked', true);
+        target.parentNode.style.textDecoration = "line-through";
+
+        //porgramcion para activar formulario de pago 
+
+     }
+    }
   
 
     seleccionarCanal = async (canal, id, caso) => {
@@ -1755,31 +1771,86 @@ class Formcotizador extends Component {
 
 
 
-
-
-
-
         <Modal isOpen={this.state.modalInsertar}>
   
-              <ModalHeader>Insertar Registro</ModalHeader>
+              <ModalHeader>Datos de Reserva</ModalHeader>
               <ModalBody>
   
                 <div className="form-group">
-                  <label>Canal: </label>
+                  <label>Nombres: </label>
                   <br />
-                  <input type="text" className="form-control" name="canal" onChange={this.handleChange} />
+                  <input type="text" className="form-control" name="nombres" onChange={this.handleChange} />
                   <br />
-                  <label>País: </label>
+                  <label>Apellidos: </label>
                   <br />
-                  <input type="text" className="form-control" name="pais" onChange={this.handleChange} />
+                  <input type="text" className="form-control" name="apellidos" onChange={this.handleChange} />
                   <br />
-                  <label>Idioma: </label>
+              
+                  <select id="origen" name="tipoDocumento" className="form-control"  onChange={this.handleChange}>
+
+                      <option  value="Seleccione Documento" disabled  selected>Seleccione Documento</option>
+                      <option  value="C.C">C.C</option>
+                      <option  value="Pasaporte">Pasaporte</option>
+                      <option  value="D.Extranjero">D.Extranjero</option>
+                
+                  </select>
+
                   <br />
-                  <input type="text" className="form-control" name="idioma" onChange={this.handleChange} />
+                  <label>Número de Documento: </label>
                   <br />
-                  <label>Cantidad de Suscriptores (millones): </label>
+                  <input type="number" className="form-control" name="numeroDocumento" onChange={this.handleChange} />
+
                   <br />
-                  <input type="text" className="form-control" name="suscriptores" onChange={this.handleChange} />
+                  <label>Número de Contacto: </label>
+                  <br />
+                  <input type="number" className="form-control" name="numeroContacto" onChange={this.handleChange} />
+
+                  <br />
+                  <label>Correo Electrónico: </label>
+                  <br />
+                  <input type="text" className="form-control" name="correo" onChange={this.handleChange} />
+
+                  <br />
+                  <input type="text" className="form-control" name="correo" onChange={this.handleChange} />
+
+
+                  <br />
+
+
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"  onClick={this.handleChangec} onChange={this.handleInputChange}></input>
+                    <label class="form-check-label" for="flexCheckDefault">
+                      acepta las politicas de Viaje 
+                    </label>
+                  </div>
+                                    
+
+                  <br />
+
+
+
+                  <form id="pasarela" >
+                    
+                      <ScriptTag
+                          src="https://checkout.epayco.co/checkout.js"
+                          class="epayco-button"
+                          data-epayco-key="491d6a0b6e992cf924edd8d3d088aff1"
+                          data-epayco-amount={this.state.totalPuestos}
+                          data-epayco-name="Vestido Mujer Primavera"
+                          data-epayco-description="Vestido Mujer Primavera"
+                          data-epayco-currency="cop"
+                          data-epayco-country="co"
+                          data-epayco-test="true"
+                          data-epayco-external="false"
+                          data-epayco-response="https://ejemplo.com/respuesta.html"
+                          data-epayco-confirmation="https://ejemplo.com/confirmacion"
+                          >
+                      </ScriptTag>
+                  </form>
+
+
+
+
                 </div>
   
               </ModalBody>
@@ -1797,7 +1868,7 @@ class Formcotizador extends Component {
 
 
             <Modal isOpen={this.state.modalEditar}>
-              <ModalHeader>Editar Registro</ModalHeader>
+              <ModalHeader></ModalHeader>
               <ModalBody>
                 <div className="form-group">
                   <label>Canal: </label>

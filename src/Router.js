@@ -5,6 +5,8 @@ import Cotizador from './Cotizador';
 import Login from './login';
 import Loginadmin from './Loginadmin';
 import Admin from './Admin';
+import Pasarela from './Pasarela'
+
 
 const Router = () => (
 	<BrowserRouter>
@@ -17,3 +19,4 @@ const Router = () => (
 );
 
 export default Router;
+
