@@ -26,16 +26,14 @@
 
 
 /* BARRA DE TITULOS DE LA LISTA  */
-
 .titulos{ 
     border-radius: 10px;
-}
-.titulos ul li{   
     background-color:  rgb(248, 105, 14); 
     border: none;
     color: white;
     height: 50px;
 }
+
 
 
 /* LISTA LOS HORARIOS DISPONIBLE */

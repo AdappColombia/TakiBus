@@ -6,6 +6,7 @@ import Login from './login';
 import Loginadmin from './Loginadmin';
 import Admin from './Admin';
 import Pasarela from './Pasarela'
+import Exitocompra from './Exitocompra'
 
 
 const Router = () => (
@@ -14,6 +15,7 @@ const Router = () => (
 			<Route exact path="/" component={Cotizador} />
 			<Route path="/admin" component={Loginadmin} />
 			<Route path="/adminApp" component={Admin} />
+			<Route path="/exitocompra" component={Exitocompra} />
 		</Switch>
 	</BrowserRouter>
 );

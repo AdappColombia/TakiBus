@@ -19,12 +19,17 @@ import  publicIp from 'public-ip';
 import './Formcotizador.css'
 import bus from './imagenes/BUS2.png';
 import asientodisponible from './imagenes/asientodisponible.png';
-import asientoNOdisponible from './imagenes/asientoNOdisponible.png';
+import asientoselected from './imagenes/asientoNOdisponible.png';
+
 import wc from './imagenes/wc.png';
 import origen from './imagenes/origen.png';
 import destino from './imagenes/destino.png';
 import fecha from './imagenes/fecha.png';
 import ScriptTag from 'react-script-tag';
+
+import Iframe from 'react-iframe'
+import jQuery from 'jquery'
+import progres from './imagenes/progres.gif';
 
 
 
@@ -43,21 +48,31 @@ class Formcotizador extends Component {
       viaje:[],
       fecha:[],
       puestos:[],
+      reservas:[],
       pre_compra:[],
       ip:'',
       ruta:'',
+      horaSalida:'',
+      fechaReserva:'',
       nodo_precompra:'',
+      destino:'',
       puesto:'',
       usuarios:'',
+      ipkey:'',
+      fila:'0',
+      idboton:'0',
       totalPuestos:'0',
       totalPuestosComa:'0',
       valorPuesto:'',
       contador:0,
 
       bandera: '0',
+      divPasarela: false,
+      modalPasarela: false,
       modalInsertar: false,
       modalEditar: false,
       estadoCheck: false,
+      estadoPago: false,
 
       compra:{
          id_compra:'',
@@ -118,12 +133,7 @@ class Formcotizador extends Component {
 
     }
 
-    peticionViaje = (origen,destino) => {
-
-
-      this.setState({ viaje: [] });
-
-
+    peticionViaje = (origen,destino,fecha) => {
 
 
       switch(origen+" "+destino){
@@ -131,19 +141,25 @@ class Formcotizador extends Component {
 
         case "Ipiales Bogotá":
 
+         
+
 
           firebase.database().ref().child("viaje").child("Ipi-Bog").on("value", (canal) => {
   
             if (canal.val() !== null) {
-    
+
               this.setState({ ...this.state.viaje, viaje: canal.val() });
+              this.setState({ destino:"Ipi-Bog" });
+
       
             } else {
-      
+
               this.setState({ viaje: [] });
       
             }
           });
+
+
 
           break;
 
@@ -157,6 +173,7 @@ class Formcotizador extends Component {
       
                 this.setState({ ...this.state.viaje, viaje: canal.val() });
         
+                this.setState({ destino:"Ipi-Cal" });
               } else {
         
                 this.setState({ viaje: [] });
@@ -177,7 +194,7 @@ class Formcotizador extends Component {
               if (canal.val() !== null) {
       
                 this.setState({ ...this.state.viaje, viaje: canal.val() });
-        
+                this.setState({ destino:"Ipi-Med" });
               } else {
         
                 this.setState({ viaje: [] });
@@ -196,7 +213,7 @@ class Formcotizador extends Component {
             if (canal.val() !== null) {
     
               this.setState({ ...this.state.viaje, viaje: canal.val() });
-      
+              this.setState({ destino:"Bog-Ipi" });
             } else {
       
               this.setState({ viaje: [] });
@@ -218,6 +235,7 @@ class Formcotizador extends Component {
               if (canal.val() !== null) {
       
                 this.setState({ ...this.state.viaje, viaje: canal.val() });
+                this.setState({ destino:"Cal-Ipi" });
         
               } else {
         
@@ -236,7 +254,9 @@ class Formcotizador extends Component {
                 if (canal.val() !== null) {
         
                   this.setState({ ...this.state.viaje, viaje: canal.val() });
-          
+                  
+                  this.setState({ destino:"Med-Ipi" });
+
                 } else {
           
                   this.setState({ viaje: [] });
@@ -292,39 +312,54 @@ class Formcotizador extends Component {
       
     }
 
-    cargarPuestos = async (valorPuesto,puesto)=>{
+
+    cargarReservas = async (fecha,horario)=>{
 
      
 
+    }
+
+
+    cargarPuestos = async (valorPuesto,horario,panelBus,panelImagen,fila,idboton)=>{
+
+     
+
+      document.getElementById(panelImagen).style.display = "block"
+      document.getElementById(panelBus).style.display = "none";
+      
+  
+
+      this.setState({ fila: fila});
+      this.setState({ horaSalida: horario});
+      this.setState({ fechaReserva: document.getElementById("fecha").value});
 
 
       var totalPuestos = 0 
       var origen = document.getElementById("origen").value
       var destino = document.getElementById("destino").value
       var ip = await publicIp.v4()
-
+      var fecha = document.getElementById("fecha").value;
       var cadenas = ip.split(".");
       var ip_sincomas = "";
+
       for(var i = 0; i < cadenas.length;i++){
         ip_sincomas = ip_sincomas+cadenas[i];
       }
 
 
-
-
-
      this.setValorPuesto(valorPuesto)
          
      this.setIp(ip_sincomas)
+
+
+
         
       switch(origen+" "+destino){
 
-
-
-   
-
         case "Ipiales Bogotá":
 
+
+      
           this.setState({ totalPuestos:0 });
           this.setRuta("Ipi-Bog")
 
@@ -336,22 +371,57 @@ class Formcotizador extends Component {
   
       
 
-
           firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").remove(
             error => {
               if (error) console.log(error)
-            });
+          });
 
 
- 
+
+       
+          firebase.database().ref().child("reservas").child(fecha).child(horario).child("Ipi-Bog").child("puestos").on("value", (canal) => {
+  
+            if (canal.val() !== null) {
+
+     
+  
+              this.setState({ ...this.state.reservas, reservas: canal.val() });
+              
+              {Object.keys(this.state.reservas).map(i => {
+    
+
+               
+                document.getElementById(this.state.reservas[i].puesto).disabled=true;  
+               document.getElementById(this.state.reservas[i].puesto).src=asientoselected
 
             
+            })}
+           
 
+            } else {
+    
+
+             
+
+
+              {Object.keys(this.state.reservas).map(i => {
+    
+                document.getElementById(this.state.reservas[i].puesto).disabled=false;  
+       
+              })}
+
+            this.setState({ reservas: [] });
+
+            }
+          });
+
+         
 
           break;
 
 
           case "Ipiales Cali":
+
             this.setState({ totalPuestos:0 });
 
             this.setRuta("Ipi-Cal")
@@ -367,13 +437,41 @@ class Formcotizador extends Component {
               error => {
                 if (error) console.log(error)
               });
+
+
+
+              firebase.database().ref().child("reservas").child(fecha).child(horario).child("Ipi-Cal").child("puestos").on("value", (canal) => {
   
-
-
-
-
-
+                if (canal.val() !== null) {
+    
+         
+      
+                  this.setState({ ...this.state.reservas, reservas: canal.val() });
+                  
+                  {Object.keys(this.state.reservas).map(i => {
+        
+                    document.getElementById(this.state.reservas[i].puesto).disabled=true; 
+                      
+                
+                })}
+               
+    
+                } else {
+    
+                  {Object.keys(this.state.reservas).map(i => {
+    
+                    document.getElementById(this.state.reservas[i].puesto).disabled=false;  
            
+                  })}
+        
+                  this.setState({ reservas: [] });
+    
+        
+                }
+              });  
+
+
+  
             break;
 
             
@@ -396,6 +494,42 @@ class Formcotizador extends Component {
                 if (error) console.log(error)
               });
             
+
+
+
+              
+              firebase.database().ref().child("reservas").child(fecha).child(horario).child("Ipi-Med").child("puestos").on("value", (canal) => {
+  
+                if (canal.val() !== null) {
+    
+         
+      
+                  this.setState({ ...this.state.reservas, reservas: canal.val() });
+                  
+                  {Object.keys(this.state.reservas).map(i => {
+        
+                    document.getElementById(this.state.reservas[i].puesto).disabled=true;   
+                
+                })}
+               
+    
+                } else {
+
+
+                  {Object.keys(this.state.reservas).map(i => {
+    
+                    document.getElementById(this.state.reservas[i].puesto).disabled=false;  
+           
+                  })}
+    
+                  this.setState({ reservas: [] });
+                  
+                  
+        
+                }
+              }); 
+
+
             break;
 
 
@@ -415,7 +549,41 @@ class Formcotizador extends Component {
             firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").remove(
               error => {
                 if (error) console.log(error)
-              });
+            });
+
+
+            
+            firebase.database().ref().child("reservas").child(fecha).child(horario).child("Bog-Ipi").child("puestos").on("value", (canal) => {
+  
+              if (canal.val() !== null) {
+  
+       
+    
+                this.setState({ ...this.state.reservas, reservas: canal.val() });
+                
+                {Object.keys(this.state.reservas).map(i => {
+      
+                  document.getElementById(this.state.reservas[i].puesto).disabled=true;   
+              
+              })}
+             
+  
+              } else {
+
+                {Object.keys(this.state.reservas).map(i => {
+    
+                  document.getElementById(this.state.reservas[i].puesto).disabled=false;  
+         
+                })}
+  
+      
+                this.setState({ reservas: [] });
+  
+      
+              }
+            }); 
+
+
 
           break;
 
@@ -443,6 +611,36 @@ class Formcotizador extends Component {
               });
 
 
+
+              firebase.database().ref().child("reservas").child(fecha).child(horario).child("Cal-Ipi").child("puestos").on("value", (canal) => {
+  
+                if (canal.val() !== null) {
+    
+         
+      
+                  this.setState({ ...this.state.reservas, reservas: canal.val() });
+                  
+                  {Object.keys(this.state.reservas).map(i => {
+        
+                    document.getElementById(this.state.reservas[i].puesto).disabled=true;   
+                
+                })}
+               
+    
+                } else {
+    
+
+                  {Object.keys(this.state.reservas).map(i => {
+    
+                    document.getElementById(this.state.reservas[i].puesto).disabled=false;  
+           
+                  })}
+        
+                  this.setState({ reservas: [] });
+    
+        
+                }
+              }); 
             break;
 
             case "Medellin Sur Ipiales":
@@ -462,6 +660,38 @@ class Formcotizador extends Component {
                 error => {
                   if (error) console.log(error)
                 });
+
+
+
+                firebase.database().ref().child("reservas").child(fecha).child(horario).child("Med-Ipi").child("puestos").on("value", (canal) => {
+  
+                  if (canal.val() !== null) {
+      
+           
+        
+                    this.setState({ ...this.state.reservas, reservas: canal.val() });
+                    
+                    {Object.keys(this.state.reservas).map(i => {
+          
+                      document.getElementById(this.state.reservas[i].puesto).disabled=true;   
+                  
+                  })}
+                 
+      
+                  } else {
+      
+          
+                    {Object.keys(this.state.reservas).map(i => {
+    
+                      document.getElementById(this.state.reservas[i].puesto).disabled=false;  
+             
+                    })}
+
+                    this.setState({ reservas: [] });
+      
+          
+                  }
+                }); 
     
               break;
 
@@ -469,6 +699,55 @@ class Formcotizador extends Component {
       }
 
 
+
+     //CAMBIO DE TEXTO DEL BOTON SILLAS
+    
+
+
+      if(this.state.idboton != idboton){
+
+
+      }else{
+      
+      
+      }
+
+
+
+
+/*
+      this.setState({ idboton:idboton});
+
+      var uno = document.getElementById(idboton);
+      if (uno.innerText == 'Seleccionar Silla'){
+        uno.innerText = 'Ocultar';
+        uno.style.backgroundColor = 'rgb(248, 105, 14)';
+      }
+      else {
+        uno.innerText = 'Seleccionar Silla';
+        uno.style.backgroundColor = 'rgb(192, 10, 80)'; 
+      }
+*/
+     
+
+
+
+     
+  
+
+
+     
+
+
+
+      setTimeout(function() {
+
+        document.getElementById(panelImagen).style.display = "none"
+
+        document.getElementById(panelBus).style.display = "block";
+  
+      },1500);
+      
 
     }
 
@@ -479,16 +758,16 @@ class Formcotizador extends Component {
   
       document.getElementById(val).disabled=true;
 
-
-
+      
 
       var valPuesto = this.state.valorPuesto
       var totalPuestos = 0 
 
       var origen = document.getElementById("origen").value
       var destino = document.getElementById("destino").value
-      var ip = await publicIp.v4()
 
+
+      var ip = await publicIp.v4()
       var cadenas = ip.split(".");
       var ip_sincomas = "";
       for(var i = 0; i < cadenas.length;i++){
@@ -496,6 +775,7 @@ class Formcotizador extends Component {
       }
 
 
+      this.setState({ipkey: ip_sincomas })
 
 
     
@@ -507,6 +787,7 @@ class Formcotizador extends Component {
         case "Ipiales Bogotá":
 
           this.setState({ totalPuestos:0 });
+
 
           firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val,val_puesto:valPuesto},
           error => {
@@ -769,13 +1050,12 @@ class Formcotizador extends Component {
 
   
     peticionPost = () => {
+
+
   
-      firebase.database().ref().child("canales").push(this.state.form,
-        error => {
-          if (error) console.log(error)
-        });
-      this.setState({ modalInsertar: false });
+        
   
+
     }
   
     peticionPut = () => {
@@ -1065,26 +1345,66 @@ class Formcotizador extends Component {
           [e.target.name]: e.target.value
         }
       })
-      console.log(this.state.form);
+    //  console.log(this.state.form);
   
     }
 
 
+    check  =async  () => {
 
-    handleChangec({target}){
-  
-      if (target.checked){
-        target.removeAttribute('checked');
-        target.parentNode.style.textDecoration = "";
+      var nombre = document.getElementById("nombres").value
+      var apellido = document.getElementById("apellidos").value
+      var documento = document.getElementById("tipoDocumento").value
+      var numerodocumento = document.getElementById("numeroDocumento").value
+      var numerocontacto = document.getElementById("numeroContacto").value
+      var correo = document.getElementById("correo").value
+
+
+
+
+      if(nombre !=""  && apellido !="" && documento !="Seleccione Documento" && numerodocumento!="" && numerocontacto!="" &&correo!=""){
+
+        this.setState({divPasarela: true})
+
  
+        /*
+        if (target.checked){
 
-     } else {
-        target.setAttribute('checked', true);
-        target.parentNode.style.textDecoration = "line-through";
+          target.removeAttribute('checked');
+          target.parentNode.style.textDecoration = "";
+         
+  
+       } else {
+  
+          target.setAttribute('checked', true);
+          target.parentNode.style.textDecoration = "line-through";
+  
+          //porgramcion para activar formulario de pago 
+          
+          this.setState({divPasarela: true });
 
-        //porgramcion para activar formulario de pago 
 
-     }
+       }*/
+
+
+
+      }else{
+
+       
+
+        this.setState({divPasarela: false})
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Debe llenar toda la información',
+      
+        })
+       
+      }
+
+
+    // pasarela
     }
   
 
@@ -1115,14 +1435,28 @@ class Formcotizador extends Component {
 
     buscar = async () => {
 
-           
+        
+    if(this.state.fila!=0){
+
+      document.getElementById(this.state.fila).classList.remove("show");
+
+    }
+    if(this.state.idboton!=0){
+
+    
+
+      var uno = document.getElementById(this.state.idboton);
+        uno.innerText = 'Seleccionar Silla';
+        uno.style.backgroundColor = 'rgb(192, 10, 80)'; 
+      
+
+    }
+
 
 
       var origen = document.getElementById("origen").value;
       var destino  = document.getElementById("destino").value;
       var fecha = document.getElementById("fecha").value; 
-
-
 
 
 
@@ -1137,18 +1471,21 @@ class Formcotizador extends Component {
 
             
 
-          
           let div = document.querySelector('#contenedor');
           div.style.visibility = 'visible';
+          
+
+           
 
             this.setState({ ...this.state.fecha, fecha: fecha });
 
-            this.peticionViaje(origen,destino);
+            this.peticionViaje(origen,destino,fecha);
 
 
+
+      
 
   
-
 
         }else{
 
@@ -1196,10 +1533,7 @@ class Formcotizador extends Component {
     }
 
 
-
-
     continuar = async () => {
-
 
 
         firebase.database().ref().child("compra").child("Ipi_Bog").push(this.state.puesto,
@@ -1208,7 +1542,6 @@ class Formcotizador extends Component {
         });
 
     }
-
 
 
     peticionGetRutas = () => {
@@ -1276,11 +1609,33 @@ class Formcotizador extends Component {
     
       let div = document.querySelector('#contenedor');
       div.style.visibility = 'hidden';
+
+
+      //Validacion de la fecha
+
+      var fecha = new Date();
+      var anio = fecha.getFullYear();
+      var dia = fecha.getDate();
+      if (dia < 10)//ahora le agregas un 0 para el formato date
+      { var dia = "0"+dia;}
+      else
+      { var dia = dia.toString;}
+
+
+      var _mes = fecha.getMonth();//viene con valores de 0 al 11
+      _mes = _mes + 1;//ahora lo tienes de 1 al 12
+      if (_mes < 10)//ahora le agregas un 0 para el formato date
+      { var mes = "0" + _mes;}
+      else
+      { var mes = _mes.toString;}
+      document.getElementById("fecha").min = anio+'-'+mes+'-'+dia;
   
+
+
+
+
       this.peticionGetRutas();
       this.peticionGetFlotas();
-
-
     
     }
   
@@ -1373,10 +1728,21 @@ class Formcotizador extends Component {
     }
  
 
+
+    pasarela = async () => {
+
+      this.setState({modalInsertar: false })
+      this.setState({modalPasarela: true })
+
+    }
+
     continuar = async () => {
+
+      this.setState({divPasarela: false})
 
        if(this.state.totalPuestosComa!=0){
 
+       
           this.setState({modalInsertar: true })
 
 
@@ -1394,8 +1760,20 @@ class Formcotizador extends Component {
  
   
     render() {
+
+
+      var total = this.state.totalPuestos
+      var descripcion =this.state.destino
+      var ip =this.state.ipkey
+      var fecha = this.state.fechaReserva
+      var hora = this.state.horaSalida
+
+      var url = "https://clickbus-50c68.web.app?total="+total +"&descripcion="+descripcion + "&ip="+ip+ "&fecha="+fecha + "&hora="+hora+ "&datospasajero="+ JSON.stringify(this.state.form)+"&puestos="+ JSON.stringify(this.state.puesto);
+
     //  let idUsuarios = this.props.cat
       return (
+
+      
         
       <div className="container">
         <div className="row">
@@ -1469,7 +1847,7 @@ class Formcotizador extends Component {
 
                 <img src={fecha} alt=""/>
                 <label for="fecha" className="fw-bolder ms-2">FECHA DE VIAJE</label>
-                <input class="form-control fondoamarillo mt-3" type="date" id="fecha"></input>
+                <input class="form-control fondoamarillo mt-3" type="date" id="fecha" min="2021-02-01"></input>
 
               </div>
 
@@ -1485,38 +1863,36 @@ class Formcotizador extends Component {
         <br></br>
 
 
-        {/* <div>
-          <select class="form-select" aria-label="Default select example">
-          <option selected disabled>Lista...</option>
-          {Object.keys(this.state.flotas).map(i => {
-
-              // console.log(i);
-              //  console.log(this.state.flotas[i].nombre);
-
-              return<option value={this.state.flotas[i].nombre}>{this.state.flotas[i].nombre}</option>
-
-            })}
-
-          </select>
-        </div> */}
+    
 
         <br></br>
         <div className="row">
         <div className="card col-md-12 col-sm-12">
 
-          <div id="contenedor" className="card-body">
+          <div id="contenedor" className="card-body" >
 
-              <div className="row">
-                <div className="titulos">
-                <ul className="list-group list-group-horizontal">
-                  <li className="list-group-item col-md-2 col-sm-2  text-center ">EMPRESAS<hr/></li>
-                  <li className="list-group-item col-md-2 col-sm-2  text-center ">HORA SALIDA<hr/></li>
-                  <li className="list-group-item col-md-2 col-sm-2  text-center ">TIPO BUS<hr/></li>
-                  <li className="list-group-item col-md-2 col-sm-2  text-center ">TERMINAL SALIDA<hr/></li>
-                  <li className="list-group-item col-md-2 col-sm-2  text-center ">TERMINAL LLEGADA<hr/></li>
-                  <li className="list-group-item col-md-2 col-sm-2  text-center ">OPCIONES<hr/></li>
-                </ul>
+          <div className="card">
+              <div className="row titulos">
+                <div className="col-md-2 col-sm-12 text-center ">
+                  EMPRESAS<hr/>
                 </div>
+                <div className="col-md-2 col-sm-12 text-center">
+                  HORA DE SALIDA<hr/>
+                </div>
+                <div className="col-md-2 col-sm-12 text-center">
+                  TIPO DE BUS<hr/>
+                </div>
+                <div className="col-md-2 col-sm-12 text-center">
+                  TERMINAL SLAIDA<hr/>
+                </div>
+                <div className="col-md-2 col-sm-12 text-center">
+                  TERMINAL LLEGADA<hr/>
+                </div>
+                <div className="col-md-2 col-sm-12 text-center">
+                  OPCIONES<hr/>
+                </div>
+                
+              </div>
               </div>
 
 
@@ -1526,6 +1902,7 @@ class Formcotizador extends Component {
                  <div className="my-2">
                   <div className="accordion" id="accordionExample">
                     {Object.keys(this.state.viaje).map(i => {
+
                     return<div className="accordion-item card sombra my-2">
                       <div className="accordion-header" id="headingOne">
                       <div className="row  my-2 p-2">
@@ -1537,7 +1914,9 @@ class Formcotizador extends Component {
                         </div>
 
                         <div className="col-md-2 col-sm-12 text-center">
+                         
                           {"Salida: "+this.state.viaje[i].horario}
+
                           {<br></br>}
                           {"Duracion: "+this.state.viaje[i].duracion}
                         </div>
@@ -1556,9 +1935,14 @@ class Formcotizador extends Component {
 
                         <div className="col-md-2 col-sm-12 text-center">
                             <h4>{ "$"+  new Intl.NumberFormat().format( this.state.viaje[i].valor)}</h4>
-                            <button className="btn consultar" type="button" data-bs-toggle="collapse"
-                            data-bs-target={"#c"+this.state.viaje[i].nodo} aria-expanded="false" aria-controls={"c"+this.state.viaje[i].nodo}   onClick={() => this.cargarPuestos(this.state.viaje[i].valor)}  >
-                              Selecionar Silla
+
+                           
+
+
+
+                             <button  id={"bo"+this.state.viaje[i].nodo}  className="btn consultar w-100" type="button" data-bs-toggle="collapse"
+                            data-bs-target={"#c"+this.state.viaje[i].nodo} aria-expanded="false" aria-controls={"c"+this.state.viaje[i].nodo}   onClick={() => this.cargarPuestos(this.state.viaje[i].valor,this.state.viaje[i].horario,"b"+this.state.viaje[i].nodo,"i"+this.state.viaje[i].nodo,"c"+this.state.viaje[i].nodo,"bo"+this.state.viaje[i].nodo)}  >
+                              Seleccionar Silla
                             </button>
 
                         </div>
@@ -1566,157 +1950,174 @@ class Formcotizador extends Component {
                       </div>
                       </div>
 
+
+
+                      
+
+
                       <div id={"c"+this.state.viaje[i].nodo} className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
+                       
+                        <div class="accordion-body" >
+
+                          <div class="container text-center"   id={"i"+this.state.viaje[i].nodo}>
+                            
+                          < img class="img-fluid  h-50 w-50" src={progres} alt="loading..." />
+                          
+                          </div>  
+
+
+                          <div id={"b"+this.state.viaje[i].nodo}>
 
                           <div className="row">
 
-                            {/* <div class="card text-white"> */}
-                              {/* <img src={bus} className="card-img" alt="..."/> */}
-                              <div className=" col-md-9 ">
-                                  
-                                <div className="bus">
-                                  
-                                  <div className="asientos btn-group btn-group-sm mt-3" role="group">
-                                    <button  id={"p1"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p1"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p2"+this.state.viaje[i].nodo} onClick={() => this.puesto("p2"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p3"+this.state.viaje[i].nodo} onClick={() => this.puesto("p3"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p4"+this.state.viaje[i].nodo} onClick={() => this.puesto("p4"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p5"+this.state.viaje[i].nodo} onClick={() => this.puesto("p5"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p6"+this.state.viaje[i].nodo} onClick={() => this.puesto("p6"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p7"+this.state.viaje[i].nodo} onClick={() => this.puesto("p7"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p8"+this.state.viaje[i].nodo} onClick={() => this.puesto("p8"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p9"+this.state.viaje[i].nodo} onClick={() => this.puesto("p9"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p10"+this.state.viaje[i].nodo} onClick={() => this.puesto("p10"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button> 
-                                    <img src={wc} alt=""/>                                                                 
-                                  </div>
-                                  <div className="asientos btn-group btn-group-sm mb-5" role="group">
-                                    <button id={"p11"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p11"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p12"+this.state.viaje[i].nodo} onClick={() => this.puesto("p12"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p13"+this.state.viaje[i].nodo} onClick={() => this.puesto("p13"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p14"+this.state.viaje[i].nodo} onClick={() => this.puesto("p14"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p15"+this.state.viaje[i].nodo} onClick={() => this.puesto("p15"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p16"+this.state.viaje[i].nodo} onClick={() => this.puesto("p16"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p17"+this.state.viaje[i].nodo} onClick={() => this.puesto("p17"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p18"+this.state.viaje[i].nodo} onClick={() => this.puesto("p18"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p19"+this.state.viaje[i].nodo} onClick={() => this.puesto("p19"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p20"+this.state.viaje[i].nodo} onClick={() => this.puesto("p20"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
+                        
 
-                                  </div>
-                                  <div className="asientos btn-group btn-group-sm mt-5" role="group">
-                                    <button  id={"p21"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p21"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p22"+this.state.viaje[i].nodo} onClick={() => this.puesto("p22"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p23"+this.state.viaje[i].nodo} onClick={() => this.puesto("p23"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p24"+this.state.viaje[i].nodo} onClick={() => this.puesto("p24"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p25"+this.state.viaje[i].nodo} onClick={() => this.puesto("p25"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p26"+this.state.viaje[i].nodo} onClick={() => this.puesto("p26"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p27"+this.state.viaje[i].nodo} onClick={() => this.puesto("p27"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p28"+this.state.viaje[i].nodo} onClick={() => this.puesto("p28"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p29"+this.state.viaje[i].nodo} onClick={() => this.puesto("p29"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button>
-                                    <button id={"p30"+this.state.viaje[i].nodo} onClick={() => this.puesto("p30"+this.state.viaje[i].nodo)} className="btn btn-group">
-                                      <img src={asientodisponible} width="37px"  alt="Disponible"/>
-                                    </button> 
-                                                                                                    
-                                  </div>
-                                  <div className="asientos btn-group btn-group-sm mb-3" role="group">
-                                  <button  id={"p31"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p31"+this.state.viaje[i].nodo)} className="btn btn-group">
+                            <div className=" col-md-9 ">
+
+                              <div className="bus">
+
+                                <div className="asientos btn-group btn-group-sm mt-3" role="group">
+                                  <button  id={"p1"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p1"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p32"+this.state.viaje[i].nodo} onClick={() => this.puesto("p32"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p2"+this.state.viaje[i].nodo} onClick={() => this.puesto("p2"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p33"+this.state.viaje[i].nodo} onClick={() => this.puesto("p33"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p3"+this.state.viaje[i].nodo} onClick={() => this.puesto("p3"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p34"+this.state.viaje[i].nodo} onClick={() => this.puesto("p34"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p4"+this.state.viaje[i].nodo} onClick={() => this.puesto("p4"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p35"+this.state.viaje[i].nodo} onClick={() => this.puesto("p35"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p5"+this.state.viaje[i].nodo} onClick={() => this.puesto("p5"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p36"+this.state.viaje[i].nodo} onClick={() => this.puesto("p36"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p6"+this.state.viaje[i].nodo} onClick={() => this.puesto("p6"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p37"+this.state.viaje[i].nodo} onClick={() => this.puesto("p37"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p7"+this.state.viaje[i].nodo} onClick={() => this.puesto("p7"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p38"+this.state.viaje[i].nodo} onClick={() => this.puesto("p38"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p8"+this.state.viaje[i].nodo} onClick={() => this.puesto("p8"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p39"+this.state.viaje[i].nodo} onClick={() => this.puesto("p39"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p9"+this.state.viaje[i].nodo} onClick={() => this.puesto("p9"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button>
-                                  <button id={"p40"+this.state.viaje[i].nodo} onClick={() => this.puesto("p40"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <button id={"p10"+this.state.viaje[i].nodo} onClick={() => this.puesto("p10"+this.state.viaje[i].nodo)} className="btn btn-group">
                                     <img src={asientodisponible} width="37px"  alt="Disponible"/>
                                   </button> 
-                                                                                                  
+                                  <img src={wc} alt=""/>                                                                 
                                 </div>
-                                  <br/>
+                                <div className="asientos btn-group btn-group-sm mb-5" role="group">
+                                  <button id={"p11"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p11"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p12"+this.state.viaje[i].nodo} onClick={() => this.puesto("p12"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p13"+this.state.viaje[i].nodo} onClick={() => this.puesto("p13"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p14"+this.state.viaje[i].nodo} onClick={() => this.puesto("p14"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p15"+this.state.viaje[i].nodo} onClick={() => this.puesto("p15"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p16"+this.state.viaje[i].nodo} onClick={() => this.puesto("p16"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p17"+this.state.viaje[i].nodo} onClick={() => this.puesto("p17"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p18"+this.state.viaje[i].nodo} onClick={() => this.puesto("p18"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p19"+this.state.viaje[i].nodo} onClick={() => this.puesto("p19"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p20"+this.state.viaje[i].nodo} onClick={() => this.puesto("p20"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+
                                 </div>
+                                <div className="asientos btn-group btn-group-sm mt-5" role="group">
+                                  <button  id={"p21"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p21"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p22"+this.state.viaje[i].nodo} onClick={() => this.puesto("p22"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p23"+this.state.viaje[i].nodo} onClick={() => this.puesto("p23"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p24"+this.state.viaje[i].nodo} onClick={() => this.puesto("p24"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p25"+this.state.viaje[i].nodo} onClick={() => this.puesto("p25"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p26"+this.state.viaje[i].nodo} onClick={() => this.puesto("p26"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p27"+this.state.viaje[i].nodo} onClick={() => this.puesto("p27"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p28"+this.state.viaje[i].nodo} onClick={() => this.puesto("p28"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p29"+this.state.viaje[i].nodo} onClick={() => this.puesto("p29"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button>
+                                  <button id={"p30"+this.state.viaje[i].nodo} onClick={() => this.puesto("p30"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                    <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                  </button> 
+
+                                </div>
+                                <div className="asientos btn-group btn-group-sm mb-3" role="group">
+                                <button  id={"p31"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p31"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p32"+this.state.viaje[i].nodo} onClick={() => this.puesto("p32"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p33"+this.state.viaje[i].nodo} onClick={() => this.puesto("p33"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p34"+this.state.viaje[i].nodo} onClick={() => this.puesto("p34"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p35"+this.state.viaje[i].nodo} onClick={() => this.puesto("p35"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p36"+this.state.viaje[i].nodo} onClick={() => this.puesto("p36"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p37"+this.state.viaje[i].nodo} onClick={() => this.puesto("p37"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p38"+this.state.viaje[i].nodo} onClick={() => this.puesto("p38"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p39"+this.state.viaje[i].nodo} onClick={() => this.puesto("p39"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button>
+                                <button id={"p40"+this.state.viaje[i].nodo} onClick={() => this.puesto("p40"+this.state.viaje[i].nodo)} className="btn btn-group">
+                                  <img src={asientodisponible} width="37px"  alt="Disponible"/>
+                                </button> 
+
+                              </div>
                                 <br/>
                               </div>
+                              <br/>
+                            </div>
+
+
                             {/* </div> */}
 
 
-                            <div className="col-md-3">
+                              <div className="col-md-3">
                               <table className="table tabla">
                                 <thead className="table-dark">
                                   <tr>
@@ -1728,34 +2129,42 @@ class Formcotizador extends Component {
                                   {Object.keys(this.state.puesto).map(i => { 
                                   return <><tr>
                                     <th scope="row">{this.state.puesto[i].puesto}</th>
-                                    
+
                                     <td>
                                       <button className="btn btn-danger" onClick={()=>this.seleccionarPuesto(this.state.puesto[i], i, 'Eliminar')}>Eliminar</button>
                                     </td>
                                   </tr>
                                   </>})}
                                 </tbody>
-                                
-                               
+                                  
+                                  
                                 <tfoot>
                                   <td>Total</td>
-                                  <td>{"$"+this.state.totalPuestosComa}</td>
-                    
+                                  <td><h3>{"$"+this.state.totalPuestosComa}</h3></td>
+                                  
                                 </tfoot>
                               </table>
-                              
-                              <div>
-                                      <button className="btn btn-danger" onClick={()=>this.continuar()}>Continuar</button>
-                                    </div>
                                   
+                                <div>
+                                  <button className="btn btn-danger" onClick={()=>this.continuar()}>Continuar</button>
+                                </div>
+                                  
+                                  
+                              </div>
+
 
                             </div>
                             
-
-                          </div>
+                          </div> 
 
                         </div>
                       </div>
+
+
+
+
+
+
 
                     </div>
                     })}
@@ -1770,23 +2179,25 @@ class Formcotizador extends Component {
 
 
 
-
         <Modal isOpen={this.state.modalInsertar}>
+
   
               <ModalHeader>Datos de Reserva</ModalHeader>
               <ModalBody>
-  
+
+             
                 <div className="form-group">
+
                   <label>Nombres: </label>
                   <br />
-                  <input type="text" className="form-control" name="nombres" onChange={this.handleChange} />
+                  <input id="nombres" type="text" className="form-control" name="nombres" onChange={this.handleChange} />
                   <br />
                   <label>Apellidos: </label>
                   <br />
-                  <input type="text" className="form-control" name="apellidos" onChange={this.handleChange} />
+                  <input id="apellidos" type="text" className="form-control" name="apellidos" onChange={this.handleChange} />
                   <br />
               
-                  <select id="origen" name="tipoDocumento" className="form-control"  onChange={this.handleChange}>
+                  <select id="tipoDocumento" name="tipoDocumento" className="form-control"  onChange={this.handleChange}>
 
                       <option  value="Seleccione Documento" disabled  selected>Seleccione Documento</option>
                       <option  value="C.C">C.C</option>
@@ -1798,58 +2209,32 @@ class Formcotizador extends Component {
                   <br />
                   <label>Número de Documento: </label>
                   <br />
-                  <input type="number" className="form-control" name="numeroDocumento" onChange={this.handleChange} />
+                  <input id="numeroDocumento" type="number" className="form-control" name="numeroDocumento" onChange={this.handleChange} />
 
                   <br />
                   <label>Número de Contacto: </label>
                   <br />
-                  <input type="number" className="form-control" name="numeroContacto" onChange={this.handleChange} />
+                  <input id="numeroContacto" type="number" className="form-control" name="numeroContacto" onChange={this.handleChange} />
 
                   <br />
                   <label>Correo Electrónico: </label>
                   <br />
-                  <input type="text" className="form-control" name="correo" onChange={this.handleChange} />
-
-                  <br />
-                  <input type="text" className="form-control" name="correo" onChange={this.handleChange} />
-
+                  <input id="correo" type="text" className="form-control" name="correo" onChange={this.handleChange} />
 
                   <br />
 
 
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"  onClick={this.handleChangec} onChange={this.handleInputChange}></input>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"  onClick={()=>this.check()}></input>
                     <label class="form-check-label" for="flexCheckDefault">
                       acepta las politicas de Viaje 
                     </label>
                   </div>
                                     
-
                   <br />
 
 
-
-                  <form id="pasarela" >
-                    
-                      <ScriptTag
-                          src="https://checkout.epayco.co/checkout.js"
-                          class="epayco-button"
-                          data-epayco-key="491d6a0b6e992cf924edd8d3d088aff1"
-                          data-epayco-amount={this.state.totalPuestos}
-                          data-epayco-name="Vestido Mujer Primavera"
-                          data-epayco-description="Vestido Mujer Primavera"
-                          data-epayco-currency="cop"
-                          data-epayco-country="co"
-                          data-epayco-test="true"
-                          data-epayco-external="false"
-                          data-epayco-response="https://ejemplo.com/respuesta.html"
-                          data-epayco-confirmation="https://ejemplo.com/confirmacion"
-                          >
-                      </ScriptTag>
-                  </form>
-
-
-
+                     
 
                 </div>
   
@@ -1857,15 +2242,28 @@ class Formcotizador extends Component {
               <ModalFooter>
   
                 <button className="btn btn-primary" onClick={() => this.peticionPost()}>Insertar</button>{"   "}
-                <button className="btn btn-danger" onClick={() => this.setState({ modalInsertar: false })}>Cancelar</button>
+              
+
+                {this.state.divPasarela ? (
+
+                    <div className="redd">
+
+                        <button className="btn btn-danger" onClick={() => this.pasarela()}>Pagar</button>
+
+
+                    </div>
+
+                    ) : (
+                    
+                    <div className="red2"> </div>
+                    
+                  )}
   
               </ModalFooter>
               
             </Modal>
   
   
-  
-
 
             <Modal isOpen={this.state.modalEditar}>
               <ModalHeader></ModalHeader>
@@ -1890,9 +2288,39 @@ class Formcotizador extends Component {
               </ModalBody>
               <ModalFooter>
                 <button className="btn btn-primary" onClick={() => this.peticionPut()}>Editar</button>{"   "}
-                <button className="btn btn-danger" onClick={() => this.setState({ modalEditar: false })}>Cancelar</button>
+                <button className="btn btn-danger" onClick={() => this.pasarela()}>Cancelar</button>
               </ModalFooter>
             </Modal>
+
+
+
+
+
+            <Modal isOpen={this.state.modalPasarela}>
+              <ModalHeader></ModalHeader>
+              <ModalBody>
+                <div className="form-group">
+                      
+                <Iframe url={url}
+       
+                   width="450px"
+                   height="850px"
+                   id="myId"
+                   className="myClassname"
+                   display="initial"
+                   position="relative"
+
+                   />
+
+
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <button className="btn btn-danger" onClick={() => this.setState({ modalPasarela: false })}>Cancelar</button>
+              </ModalFooter>
+            </Modal>
+
+
           </div>
       
       );
