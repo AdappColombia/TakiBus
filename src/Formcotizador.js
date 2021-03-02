@@ -24,7 +24,7 @@ import asientoselected from './imagenes/asientoNOdisponible.png';
 import wc from './imagenes/wc.png';
 import origen from './imagenes/origen.png';
 import destino from './imagenes/destino.png';
-import fecha from './imagenes/fecha.png';
+import calendario from './imagenes/fecha.png';
 import ScriptTag from 'react-script-tag';
 
 import Iframe from 'react-iframe'
@@ -712,9 +712,6 @@ class Formcotizador extends Component {
       
       }
 
-
-
-
 /*
       this.setState({ idboton:idboton});
 
@@ -730,13 +727,6 @@ class Formcotizador extends Component {
 */
      
 
-
-
-     
-  
-
-
-     
 
 
 
@@ -1435,7 +1425,9 @@ class Formcotizador extends Component {
 
     buscar = async () => {
 
-        
+      document.getElementById("containerMenu").style.display = "none";
+
+
     if(this.state.fila!=0){
 
       document.getElementById(this.state.fila).classList.remove("show");
@@ -1443,13 +1435,10 @@ class Formcotizador extends Component {
     }
     if(this.state.idboton!=0){
 
-    
-
       var uno = document.getElementById(this.state.idboton);
         uno.innerText = 'Seleccionar Silla';
         uno.style.backgroundColor = 'rgb(192, 10, 80)'; 
       
-
     }
 
 
@@ -1482,7 +1471,15 @@ class Formcotizador extends Component {
             this.peticionViaje(origen,destino,fecha);
 
 
+            document.getElementById("progresMenu").style.display = "block"
 
+            setTimeout(function() {
+
+              document.getElementById("progresMenu").style.display = "none"
+      
+              document.getElementById("containerMenu").style.display = "block";
+        
+            },1500);
       
 
   
@@ -1606,7 +1603,13 @@ class Formcotizador extends Component {
     componentDidMount() {
 
 
-    
+      document.getElementById("progresMenu").style.display = "none"
+      
+      document.getElementById("containerMenu").style.display = "none";
+
+
+
+
       let div = document.querySelector('#contenedor');
       div.style.visibility = 'hidden';
 
@@ -1845,7 +1848,7 @@ class Formcotizador extends Component {
 
               <div className="text-center col-md-3 col-sm-12 col-12 ">
 
-                <img src={fecha} alt=""/>
+                <img src={calendario} alt=""/>
                 <label for="fecha" className="fw-bolder ms-2">FECHA DE VIAJE</label>
                 <input class="form-control fondoamarillo mt-3" type="date" id="fecha" min="2021-02-01"></input>
 
@@ -1866,30 +1869,41 @@ class Formcotizador extends Component {
     
 
         <br></br>
+
+
+        <div id="progresMenu" class="container text-center" >
+          <img class="img-fluid  h-50 w-50" src={progres} alt="loading..." />
+        </div>         
+
+
+        <div id="containerMenu"> 
+
         <div className="row">
-        <div className="card col-md-12 col-sm-12">
+        <div className="col-md-12 col-sm-12">
 
           <div id="contenedor" className="card-body" >
 
           <div className="card">
+            
               <div className="row titulos">
-                <div className="col-md-2 col-sm-12 text-center ">
-                  EMPRESAS<hr/>
+                
+                <div className="col-md-2 col-sm-12  text-center ">
+                <b>EMPRESAS</b><hr/>
                 </div>
                 <div className="col-md-2 col-sm-12 text-center">
-                  HORA DE SALIDA<hr/>
+                <b>HORA DE SALIDA</b><hr/>
                 </div>
                 <div className="col-md-2 col-sm-12 text-center">
-                  TIPO DE BUS<hr/>
+                <b>TIPO DE BUS</b><hr/>
                 </div>
                 <div className="col-md-2 col-sm-12 text-center">
-                  TERMINAL SLAIDA<hr/>
+                <b>TERMINAL SLAIDA</b><hr/>
                 </div>
                 <div className="col-md-2 col-sm-12 text-center">
-                  TERMINAL LLEGADA<hr/>
+                <b>TERMINAL LLEGADA</b><hr/>
                 </div>
                 <div className="col-md-2 col-sm-12 text-center">
-                  OPCIONES<hr/>
+                <b>OPCIONES</b><hr/>
                 </div>
                 
               </div>
@@ -1922,7 +1936,17 @@ class Formcotizador extends Component {
                         </div>
 
                         <div className="col-md-2 col-sm-12 text-center ">
-                          {this.state.viaje[i].tipo_bus}
+
+                          {
+                            this.state.viaje[i].tipo_bus
+                          }
+                            <br/>
+                          {
+                          
+                            this.state.viaje[i].tipo_bus=="2G"? <img width="160px" src={bolivariano}></img>:
+                            this.state.viaje[i].tipo_bus=="2G Gold"? <img width="160px" src={bolivariano}></img>:<img width="160px" src={continental}></img>
+                          }
+
                         </div>
 
                         <div className="col-md-2 col-sm-12 text-center">
@@ -1934,7 +1958,7 @@ class Formcotizador extends Component {
                         </div>
 
                         <div className="col-md-2 col-sm-12 text-center">
-                            <h4>{ "$"+  new Intl.NumberFormat().format( this.state.viaje[i].valor)}</h4>
+                            <h3>{ "$"+  new Intl.NumberFormat().format( this.state.viaje[i].valor)}</h3>
 
                            
 
@@ -2162,10 +2186,6 @@ class Formcotizador extends Component {
 
 
 
-
-
-
-
                     </div>
                     })}
                   </div>
@@ -2176,6 +2196,10 @@ class Formcotizador extends Component {
           </div>
         </div>
         </div>
+           
+        </div>         
+
+       
 
 
 
@@ -2209,12 +2233,12 @@ class Formcotizador extends Component {
                   <br />
                   <label>Número de Documento: </label>
                   <br />
-                  <input id="numeroDocumento" type="number" className="form-control" name="numeroDocumento" onChange={this.handleChange} />
+                  <input min="0" id="numeroDocumento" type="number" className="form-control" name="numeroDocumento" onChange={this.handleChange} />
 
                   <br />
                   <label>Número de Contacto: </label>
                   <br />
-                  <input id="numeroContacto" type="number" className="form-control" name="numeroContacto" onChange={this.handleChange} />
+                  <input min="0" id="numeroContacto" type="number" className="form-control" name="numeroContacto" onChange={this.handleChange} />
 
                   <br />
                   <label>Correo Electrónico: </label>
@@ -2241,14 +2265,14 @@ class Formcotizador extends Component {
               </ModalBody>
               <ModalFooter>
   
-                <button className="btn btn-primary" onClick={() => this.peticionPost()}>Insertar</button>{"   "}
+                <button className="btn btn-danger" onClick={() => this.setState({ modalInsertar: false })}>Cancelar</button>{"   "}
               
 
                 {this.state.divPasarela ? (
 
                     <div className="redd">
 
-                        <button className="btn btn-danger" onClick={() => this.pasarela()}>Pagar</button>
+                        <button className="btn btn-warning" onClick={() => this.pasarela()}>Pagar y reservar</button>
 
 
                     </div>
