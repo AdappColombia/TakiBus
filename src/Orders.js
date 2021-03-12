@@ -142,13 +142,8 @@ class Orders extends Component {
               <input class="form-control" type="date"  id="example-date-input"></input>
             </div>
 
-
             
           </div>
-
-
-
-
 
 
           <select class="form-select" aria-label="Default select example">

@@ -14,19 +14,31 @@ import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import {Link} from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
 import Chart from './Chart';
 import Deposits from './Deposits';
-import Orders from './Orders';
+import Compras from './Compras';
+import Reservas from './Reservas';
 import Button from '@material-ui/core/Button';
 import Swal from 'sweetalert2';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+
+
+
 
 function Copyright() {
   return (
@@ -122,7 +134,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
+
+
+
 export default function Dashboard() {
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -147,25 +165,22 @@ export default function Dashboard() {
 
       if (result.isConfirmed) {
 
-
         document.getElementById("cerrar").click()
-
-          
 
       }
   })
     
 
-
-  };
+};
 
 
 
 
   return (
+
+    
+
     <div className={classes.root}>
-
-
 
 
 
@@ -186,7 +201,7 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            TakiBus
           </Typography>
 
 
@@ -201,6 +216,8 @@ export default function Dashboard() {
 
 
 
+  <Router>
+
       <Drawer
         variant="permanent"
         classes={{
@@ -213,39 +230,94 @@ export default function Dashboard() {
             <ChevronLeftIcon />
           </IconButton>
         </div>
+
         <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
+
+
+      <List>
+
+        <Link to="/compras">
+
+          <ListItem button>
+            <ListItemIcon>
+            <ShoppingCartIcon />
+
+            </ListItemIcon>
+            <ListItemText primary="Compras" />
+          </ListItem>
+
+        </Link>
+
+
+        <Link to="/reservas">
+
+          <ListItem button>
+            <ListItemIcon>
+            <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary="Reservas" />
+          </ListItem>       
+
+        </Link>
+
+      </List>
+      
+      
       </Drawer>
+
+
+
+
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
+
+
+
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <Chart />
-              </Paper>
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
-          </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
+
+        
+
+	      	<Switch>
+	      	
+	      		<Route path="/compras">
+              
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+
+                  <Compras />
+                   
+
+                  </Paper>
+                </Grid>
+              </Grid>
+
+            </Route>
+
+	      		<Route path="/reservas" >
+
+            <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+
+                  <Reservas/>
+                   
+
+                  </Paper>
+                </Grid>
+              </Grid>
+
+            </Route>
+	      	
+	      	</Switch>
+
         </Container>
+
+
+
       </main>
+
+      </Router>
     </div>
   );
 }

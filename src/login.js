@@ -16,9 +16,6 @@ import Signin from './SignIn';
 class Login extends Component {
 
 
- 
-
-
     render() {
 
       const {

@@ -39,6 +39,7 @@ import progres from './imagenes/progres.gif';
 
 
 import './Formcotizador.css'
+import { Link } from 'react-router-dom';
 
 class Formcotizador extends Component {
 
@@ -145,7 +146,6 @@ class Formcotizador extends Component {
         case "Ipiales Bogotá":
 
          
-
 
           firebase.database().ref().child("viaje").child("Ipi-Bog").on("value", (canal) => {
   
@@ -745,7 +745,7 @@ class Formcotizador extends Component {
     }
 
 
-    puesto = async (val) => {
+    puesto = async (val,horario) => {
 
       
   
@@ -758,6 +758,9 @@ class Formcotizador extends Component {
 
       var origen = document.getElementById("origen").value
       var destino = document.getElementById("destino").value
+      var fecha = document.getElementById("fecha").value; 
+
+
 
 
       var ip = await publicIp.v4()
@@ -782,7 +785,7 @@ class Formcotizador extends Component {
           this.setState({ totalPuestos:0 });
 
 
-          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val,val_puesto:valPuesto},
+          firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Bog").push({id_pre_compra:"Ipi-Bog",puesto:val,val_puesto:valPuesto,hora_viaje:horario,fecha_viaje:fecha},
           error => {
             if (error) console.log(error)
 
@@ -826,7 +829,7 @@ class Formcotizador extends Component {
 
             this.setState({ totalPuestos:0 });
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val,val_puesto:valPuesto},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Cal").push({id_pre_compra:"Ipi-Cal",puesto:val,val_puesto:valPuesto,hora_viaje:horario,fecha_viaje:fecha},
             error => {
               if (error) console.log(error)
             });
@@ -871,7 +874,7 @@ class Formcotizador extends Component {
 
             this.setState({ totalPuestos:0 });
               
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").push({id_pre_compra:"Ipi-Med",puesto:val,val_puesto:valPuesto},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Ipi-Med").push({id_pre_compra:"Ipi-Med",puesto:val,val_puesto:valPuesto,hora_viaje:horario,fecha_viaje:fecha},
             error => {
               if (error) console.log(error)
             });
@@ -912,7 +915,7 @@ class Formcotizador extends Component {
 
             this.setState({ totalPuestos:0 });
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").push({id_pre_compra:"Bog-Ipi",puesto:val,val_puesto:valPuesto},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Bog-Ipi").push({id_pre_compra:"Bog-Ipi",puesto:val,val_puesto:valPuesto,hora_viaje:horario,fecha_viaje:fecha},
             error => {
               if (error) console.log(error)
             });
@@ -958,7 +961,7 @@ class Formcotizador extends Component {
           case "Cali Ipiales":
             this.setState({ totalPuestos:0 });
 
-            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").push({id_pre_compra:"Cal-Ipi",puesto:val,val_puesto:valPuesto},
+            firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Cal-Ipi").push({id_pre_compra:"Cal-Ipi",puesto:val,val_puesto:valPuesto,hora_viaje:horario,fecha_viaje:fecha},
             error => {
               if (error) console.log(error)
             });
@@ -998,7 +1001,7 @@ class Formcotizador extends Component {
 
               this.setState({ totalPuestos:0 });
 
-              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").push({id_pre_compra:"Med-Ipi",puesto:val,val_puesto:valPuesto},
+              firebase.database().ref().child("pre_compra").child(ip_sincomas).child("Med-Ipi").push({id_pre_compra:"Med-Ipi",puesto:val,val_puesto:valPuesto,hora_viaje:horario,fecha_viaje:fecha},
               error => {
                 if (error) console.log(error)
               });
@@ -1064,9 +1067,6 @@ class Formcotizador extends Component {
   
     peticionDelete  =async  () => {
   
-    
-     
-
         
       document.getElementById(this.state.prereserva.puesto).disabled=false;
 
@@ -1097,8 +1097,6 @@ class Formcotizador extends Component {
     
       switch(origen+" "+destino){
 
-
-     
 
         case "Ipiales Bogotá":
 
@@ -1626,10 +1624,15 @@ class Formcotizador extends Component {
       var fecha = new Date();
       var anio = fecha.getFullYear();
       var dia = fecha.getDate();
-      if (dia < 10)//ahora le agregas un 0 para el formato date
-      { var dia = "0"+dia;}
-      else
-      { var dia = dia.toString;}
+      if (dia < 10){  
+
+        dia = "0"+dia;
+
+      }else{
+
+        dia=dia
+      }
+     
 
 
       var _mes = fecha.getMonth();//viene con valores de 0 al 11
@@ -1783,9 +1786,13 @@ class Formcotizador extends Component {
     //  let idUsuarios = this.props.cat
       return (
 
-      
+    
         
       <div className="container">
+
+
+        
+        
         <div className="row">
 
           <div className="card buscador border-1 p-3 col-md-12 col-sm-12 col-12">
@@ -1847,6 +1854,7 @@ class Formcotizador extends Component {
                                   </>
                                         );
                                 break;
+
                     }
 
                   })}
@@ -1902,7 +1910,7 @@ class Formcotizador extends Component {
                     <b>TIPO DE BUS</b><hr/>
                     </div>
                     <div className="col-md-2 col-sm-12 text-center">
-                    <b>TERMINAL SLAIDA</b><hr/>
+                    <b>TERMINAL SALIDA</b><hr/>
                     </div>
                     <div className="col-md-2 col-sm-12 text-center">
                     <b>TERMINAL LLEGADA</b><hr/>
@@ -1987,35 +1995,36 @@ class Formcotizador extends Component {
                                   <div className="a col-md-9 col-sm-12 col-12 p-0 "> 
                                                           
                                       <img src={bus} class="card-img" alt="..."/>
+                                      
                                       <div className="b1 btn-group btn-group-sm" role="group">
-                                        <button  id={"p1"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p1"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button  id={"p1"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p1"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p2"+this.state.viaje[i].nodo} onClick={() => this.puesto("p2"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p2"+this.state.viaje[i].nodo} onClick={() => this.puesto("p2"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p3"+this.state.viaje[i].nodo} onClick={() => this.puesto("p3"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p3"+this.state.viaje[i].nodo} onClick={() => this.puesto("p3"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p4"+this.state.viaje[i].nodo} onClick={() => this.puesto("p4"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p4"+this.state.viaje[i].nodo} onClick={() => this.puesto("p4"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p5"+this.state.viaje[i].nodo} onClick={() => this.puesto("p5"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p5"+this.state.viaje[i].nodo} onClick={() => this.puesto("p5"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p6"+this.state.viaje[i].nodo} onClick={() => this.puesto("p6"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p6"+this.state.viaje[i].nodo} onClick={() => this.puesto("p6"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p7"+this.state.viaje[i].nodo} onClick={() => this.puesto("p7"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p7"+this.state.viaje[i].nodo} onClick={() => this.puesto("p7"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p8"+this.state.viaje[i].nodo} onClick={() => this.puesto("p8"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p8"+this.state.viaje[i].nodo} onClick={() => this.puesto("p8"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p9"+this.state.viaje[i].nodo} onClick={() => this.puesto("p9"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p9"+this.state.viaje[i].nodo} onClick={() => this.puesto("p9"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p10"+this.state.viaje[i].nodo} onClick={() => this.puesto("p10"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p10"+this.state.viaje[i].nodo} onClick={() => this.puesto("p10"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button> 
                                         <button   class="btn p-0 ">
@@ -2025,34 +2034,34 @@ class Formcotizador extends Component {
                                                                                                         
                                       </div>
                                       <div className="b2 btn-group btn-group-lg" role="group">
-                                        <button id={"p11"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p11"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p11"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p11"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p12"+this.state.viaje[i].nodo} onClick={() => this.puesto("p12"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p12"+this.state.viaje[i].nodo} onClick={() => this.puesto("p12"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p13"+this.state.viaje[i].nodo} onClick={() => this.puesto("p13"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p13"+this.state.viaje[i].nodo} onClick={() => this.puesto("p13"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p14"+this.state.viaje[i].nodo} onClick={() => this.puesto("p14"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p14"+this.state.viaje[i].nodo} onClick={() => this.puesto("p14"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p15"+this.state.viaje[i].nodo} onClick={() => this.puesto("p15"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p15"+this.state.viaje[i].nodo} onClick={() => this.puesto("p15"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p16"+this.state.viaje[i].nodo} onClick={() => this.puesto("p16"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p16"+this.state.viaje[i].nodo} onClick={() => this.puesto("p16"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p17"+this.state.viaje[i].nodo} onClick={() => this.puesto("p17"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p17"+this.state.viaje[i].nodo} onClick={() => this.puesto("p17"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p18"+this.state.viaje[i].nodo} onClick={() => this.puesto("p18"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p18"+this.state.viaje[i].nodo} onClick={() => this.puesto("p18"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p19"+this.state.viaje[i].nodo} onClick={() => this.puesto("p19"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p19"+this.state.viaje[i].nodo} onClick={() => this.puesto("p19"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p20"+this.state.viaje[i].nodo} onClick={() => this.puesto("p20"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p20"+this.state.viaje[i].nodo} onClick={() => this.puesto("p20"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
                                         <button   class="btn p-0 invisible">
@@ -2061,34 +2070,34 @@ class Formcotizador extends Component {
                                         
                                       </div>
                                       <div className="b3 btn-group" role="group">
-                                        <button  id={"p21"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p21"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button  id={"p21"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p21"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p22"+this.state.viaje[i].nodo} onClick={() => this.puesto("p22"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p22"+this.state.viaje[i].nodo} onClick={() => this.puesto("p22"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p23"+this.state.viaje[i].nodo} onClick={() => this.puesto("p23"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p23"+this.state.viaje[i].nodo} onClick={() => this.puesto("p23"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p24"+this.state.viaje[i].nodo} onClick={() => this.puesto("p24"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p24"+this.state.viaje[i].nodo} onClick={() => this.puesto("p24"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p25"+this.state.viaje[i].nodo} onClick={() => this.puesto("p25"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p25"+this.state.viaje[i].nodo} onClick={() => this.puesto("p25"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p26"+this.state.viaje[i].nodo} onClick={() => this.puesto("p26"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p26"+this.state.viaje[i].nodo} onClick={() => this.puesto("p26"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p27"+this.state.viaje[i].nodo} onClick={() => this.puesto("p27"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p27"+this.state.viaje[i].nodo} onClick={() => this.puesto("p27"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p28"+this.state.viaje[i].nodo} onClick={() => this.puesto("p28"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p28"+this.state.viaje[i].nodo} onClick={() => this.puesto("p28"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p29"+this.state.viaje[i].nodo} onClick={() => this.puesto("p29"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p29"+this.state.viaje[i].nodo} onClick={() => this.puesto("p29"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p30"+this.state.viaje[i].nodo} onClick={() => this.puesto("p30"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p30"+this.state.viaje[i].nodo} onClick={() => this.puesto("p30"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button> 
                                         <button   class="btn p-0 invisible">
@@ -2096,34 +2105,34 @@ class Formcotizador extends Component {
                                         </button> 
                                       </div>
                                       <div className="b4 btn-group" role="group">
-                                        <button  id={"p31"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p31"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button  id={"p31"+this.state.viaje[i].nodo}  onClick={() => this.puesto("p31"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p32"+this.state.viaje[i].nodo} onClick={() => this.puesto("p32"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p32"+this.state.viaje[i].nodo} onClick={() => this.puesto("p32"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p33"+this.state.viaje[i].nodo} onClick={() => this.puesto("p33"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p33"+this.state.viaje[i].nodo} onClick={() => this.puesto("p33"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p34"+this.state.viaje[i].nodo} onClick={() => this.puesto("p34"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p34"+this.state.viaje[i].nodo} onClick={() => this.puesto("p34"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p35"+this.state.viaje[i].nodo} onClick={() => this.puesto("p35"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p35"+this.state.viaje[i].nodo} onClick={() => this.puesto("p35"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p36"+this.state.viaje[i].nodo} onClick={() => this.puesto("p36"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p36"+this.state.viaje[i].nodo} onClick={() => this.puesto("p36"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p37"+this.state.viaje[i].nodo} onClick={() => this.puesto("p37"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p37"+this.state.viaje[i].nodo} onClick={() => this.puesto("p37"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p38"+this.state.viaje[i].nodo} onClick={() => this.puesto("p38"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p38"+this.state.viaje[i].nodo} onClick={() => this.puesto("p38"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p39"+this.state.viaje[i].nodo} onClick={() => this.puesto("p39"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p39"+this.state.viaje[i].nodo} onClick={() => this.puesto("p39"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button>
-                                        <button id={"p40"+this.state.viaje[i].nodo} onClick={() => this.puesto("p40"+this.state.viaje[i].nodo)} className="btn p-0">
+                                        <button id={"p40"+this.state.viaje[i].nodo} onClick={() => this.puesto("p40"+this.state.viaje[i].nodo,this.state.viaje[i].horario)} className="btn p-0">
                                           <img src={asientodisponible} class="img-fluid"  alt="Disponible"/>
                                         </button> 
                                         <button   class="btn p-0 invisible">

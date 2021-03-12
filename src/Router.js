@@ -12,10 +12,14 @@ import Exitocompra from './Exitocompra'
 const Router = () => (
 	<BrowserRouter>
 		<Switch>
+
 			<Route exact path="/" component={Cotizador} />
 			<Route path="/admin" component={Loginadmin} />
 			<Route path="/adminApp" component={Admin} />
 			<Route path="/exitocompra" component={Exitocompra} />
+			<Route path="/reservas" component={Admin} />
+			<Route path="/compras" component={Admin} />
+
 		</Switch>
 	</BrowserRouter>
 );
